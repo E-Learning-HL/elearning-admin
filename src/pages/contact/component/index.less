@@ -1,0 +1,76 @@
+.form-contact {
+  border-radius: 16px;
+  padding: 24px;
+  width: 320px;
+  background-color: #F9F9F9;
+  .form-contact-title {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px;
+    padding-bottom: 8px;
+    text-align: center;
+    text-transform: capitalize;
+    border-bottom: 1px solid #DDD;
+    color: #2A3467;
+  }
+  .input-form-contact {
+    height: 48px;
+    border-radius: 8px;
+    padding: 16px;
+    border-color: #FFFFFF;
+    background-color: #FFFFFF;
+    ::-webkit-input-placeholder {
+      color: red;
+    }
+  }
+  #customer_name::placeholder, #customer_phone_number::placeholder,
+  #email::placeholder, #note::placeholder
+  {
+    color: #6884A7;
+  }
+  .ant-select-selection-placeholder {
+    color: #6884A7;
+  }
+  .textarea-form-contact {
+    min-height: 120px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 16px;
+    border-color: #FFFFFF;
+    background-color: #FFFFFF;
+  }
+  .select-form-contact {
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    height: 48px;
+    .ant-select-selector {
+      border: 1px solid #FFFFFF;
+    }
+  }
+  .wrapper-button-submit {
+    margin-bottom: 0 !important;
+  }
+  .submit-btn-form-contact {
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 8px;
+    background: #00C5D7;
+  }
+}
+
+.edit-contact {
+  .textarea-contact {
+    min-height: 120px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 16px;
+    border-color: #d9d9d9;
+    background-color: #FFFFFF;
+  }
+  .submit-btn-edit-contact {
+    display: flex;
+    align-items: center;
+    float: right;
+  }
+}

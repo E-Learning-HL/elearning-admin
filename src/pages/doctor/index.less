@@ -1,0 +1,128 @@
+.wrapper-doctor {
+  .ant-form-item-label {
+    flex: unset !important;
+  }
+
+  .logo-clinic {
+    width: 70px;
+    height: 70px;
+    margin-right: 10px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .wrapper-first-column {
+    display: flex;
+    align-items: center;
+  }
+
+  .introduce {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .wrapper-operator {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    text-align: center;
+
+    .wrapper-button-menu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #e7e7e7;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+}
+
+.wrapper-detail-doctor {
+  width: 100%;
+
+  .wp-block-info {
+    font-size: 16px;
+    display: flex;
+
+    .avatar {
+      width: 125px;
+      height: 125px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .wp-info-right {
+      margin-left: 15px;
+
+      .doctor-name {
+        color: var(--color-bg-navy, #2a3467);
+        /* P1/Bold */
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%;
+        /* 27px */
+      }
+
+      .doctor-experience {
+        display: flex;
+        align-items: center;
+        margin-top: 8px;
+
+        .icon-experience {
+          width: 20px;
+          height: 20px;
+        }
+
+        .title-experience {
+          color: var(--color-bg-navy, #2a3467);
+          /* P3/Bold */
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 150%;
+          /* 21px */
+          margin-left: 6px;
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+
+  .wp-block-introduce {
+    margin-top: 20px;
+
+    .block-title {
+      color: var(--color-bg-navy, #2a3467);
+      /* H3.5 */
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 130%;
+      /* 31.2px */
+    }
+
+    .space {
+      height: 1px;
+      width: 100%;
+      background: var(--color-border-blue, #bcf5ff);
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
+
+    .block-value {
+      color: var(--color-text, #6884a7);
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      white-space: pre-line;
+    }
+  }
+}

@@ -1,0 +1,385 @@
+.wrapper-clinic {
+  .ant-form-item-label {
+    flex: unset !important;
+  }
+  .logo-clinic {
+    width: 70px;
+    height: 70px;
+    margin-right: 10px;
+    object-fit: contain;
+    border-radius: 5px;
+  }
+  .wrapper-first-column {
+    display: flex;
+    align-items: center;
+    .wrapper-info {
+      .clinic-name {
+        font-size: 16px;
+      }
+      .description {
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
+    }
+  }
+  .wrapper-operator {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    text-align: center;
+    .wrapper-button-menu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #e7e7e7;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+}
+
+.wrapper-detail-clinic {
+  width: 100%;
+  .wrapper-header-block {
+    .info-cover {
+      width: 100%;
+      height: 370px;
+      object-fit: cover;
+    }
+    .wrapper-info {
+      display: flex;
+      // justify-content: space-between;
+      padding: 40px;
+      background: var(--Bg, #f9f9f9);
+      .info-right {
+        margin-right: 7px;
+        .title-name {
+          color: #2a3467;
+          /* H3 */
+          // font-family: Roboto Flex;
+          font-size: 32px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 130%; /* 41.6px */
+          text-transform: capitalize;
+          margin-bottom: 16px;
+        }
+        .wp-line-info {
+          display: flex;
+          align-items: center;
+          margin-top: 8px;
+          .icon-info {
+            margin-right: 8px;
+          }
+          .key-info {
+            color: var(--color-bg-navy, #2a3467);
+            /* P2/Bold */
+            // font-family: Roboto Flex;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 150%; /* 24px */
+            margin-right: 8px;
+          }
+          .value-info {
+            color: var(--color-bg-navy, #2a3467);
+            /* P2/Normal */
+            // font-family: Roboto Flex;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 150%;
+          }
+        }
+      }
+      .info-left {
+        margin-right: 20px;
+        .info-logo {
+          width: 180px;
+          height: 180px;
+          border-radius: 50%;
+          object-fit: contain;
+        }
+      }
+    }
+    .wp-block-introduce,
+    .wp-block-address,
+    .wp-block-info,
+    .wp-block-price,
+    .wp-block-image,
+    .wp-block-doctor {
+      margin-top: 20px;
+      .block-title {
+        color: var(--color-bg-navy, #2a3467);
+        /* H3.5 */
+        font-size: 22px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 130%; /* 31.2px */
+      }
+      .space {
+        height: 1px;
+        width: 100%;
+        background: var(--color-border-blue, #bcf5ff);
+        margin-top: 12px;
+        margin-bottom: 20px;
+      }
+      .block-value {
+        // color: var(--color-text, #6884a7);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%;
+        white-space: pre-line;
+        line-height: 2;
+      }
+    }
+    .wp-block-address {
+      ul {
+        list-style-type: disc;
+      }
+    }
+    .wp-block-info {
+      .wp-block-specialization {
+        display: flex;
+        margin-bottom: 16px;
+        .wp-title-block {
+          color: var(--color-bg-navy, #2a3467);
+          /* P1/Bold */
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 150%; /* 27px */
+          .icon-title {
+            margin-right: 8px;
+          }
+          margin-right: 9px;
+          min-width: 150px;
+        }
+        .wp-tag-block {
+          display: flex;
+          display: flex;
+          flex-wrap: wrap;
+          .common-tag {
+            border-radius: 8px;
+            background: #71a3dd;
+            padding: 8px 12px;
+            justify-content: center;
+            align-items: center;
+            width: fit-content;
+            color: var(--color-white, #fff);
+            /* P2/Bold */
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 150%; /* 24px */
+            margin-right: 10px;
+            margin-bottom: 7px;
+          }
+        }
+      }
+    }
+    .wp-block-price {
+      .title-value {
+        color: var(--color-primary, #2a3467);
+        /* P2/Bold */
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%; /* 24px */
+        margin-bottom: 10px;
+      }
+      .wp-table-price {
+        margin-top: 24px;
+      }
+    }
+    .wp-block-image {
+      .image-gallery-thumbnail {
+        width: 30% !important;
+        cursor: pointer;
+      }
+    }
+    .wp-block-doctor {
+      .item-doctor {
+        background: #f9f9f9;
+        padding: 16px;
+        padding-bottom: 24px;
+        border-radius: 16px;
+        .image-doctor {
+          width: 100%;
+          height: 246px;
+          object-fit: cover;
+          border-radius: 8px;
+        }
+        .doctor-name {
+          margin-top: 24px;
+          color: var(--color-bg-navy, #2a3467);
+          /* P1/Bold */
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 150%; /* 27px */
+        }
+        .doctor-title {
+          color: var(--color-text, #6884a7);
+          /* P2/Normal */
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 150%; /* 24px */
+          margin-top: 8px;
+        }
+        .space-title {
+          width: 100%;
+          height: 1px;
+          background: #dddddd;
+          margin-top: 12px;
+          margin-bottom: 12px;
+        }
+        .wp-line-doctor {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8px;
+          .icon-star-doctor {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+          }
+          .name-line-doctor {
+            color: var(--color-bg-navy, #2a3467);
+            /* P2/Bold */
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 150%; /* 24px */
+            margin-right: 8px;
+          }
+          .value-line-doctor {
+            color: var(--color-bg-navy, #2a3467);
+            /* P2/Normal */
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 150%; /* 24px */
+          }
+        }
+      }
+      .col-item-doctor {
+        padding: 8px;
+      }
+    }
+  }
+  .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+  }
+  li.ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 4.5em;
+  }
+  .ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 3em;
+  }
+  li.ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 4.5em;
+  }
+  .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+  }
+  li.ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 7.5em;
+  }
+  .ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 6em;
+  }
+  li.ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 7.5em;
+  }
+  .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+  }
+  li.ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 10.5em;
+  }
+  .ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 9em;
+  }
+  li.ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 10.5em;
+  }
+  .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+  }
+  li.ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 13.5em;
+  }
+  .ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 12em;
+  }
+  li.ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 13.5em;
+  }
+  .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+  }
+  li.ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 16.5em;
+  }
+  .ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 15em;
+  }
+  li.ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 16.5em;
+  }
+  .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+  }
+  li.ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 19.5em;
+  }
+  .ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 18em;
+  }
+  li.ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 19.5em;
+  }
+  .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+  }
+  li.ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 22.5em;
+  }
+  .ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 21em;
+  }
+  li.ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 22.5em;
+  }
+  .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+  }
+  li.ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 25.5em;
+  }
+  .ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 24em;
+  }
+  li.ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 25.5em;
+  }
+  .ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 27em;
+  }
+  li.ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 28.5em;
+  }
+  .ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 27em;
+  }
+  li.ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 28.5em;
+  }
+}
