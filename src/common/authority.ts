@@ -1,16 +1,16 @@
 export function setAuthority(authority: string) {
-  localStorage.setItem('nhakhoahub-authority', authority);
+  localStorage.setItem('elearning-authority', authority);
 }
 export function setInfo(id: string) {
-  localStorage.setItem('nhakhoahub-user-info', id);
+  localStorage.setItem('elearning-user-info', id);
 }
 export function getInfo() {
-  return localStorage.getItem('nhakhoahub-user-info');
+  return localStorage.getItem('elearning-user-info');
 }
 
 export function getAuthority() {
-  return localStorage.getItem('nhakhoahub-authority');
+  return localStorage.getItem('elearning-authority');
 }
 export function clearAuthority() {
-  localStorage.removeItem('nhakhoahub-authority');
+  localStorage.removeItem('elearning-authority');
 }

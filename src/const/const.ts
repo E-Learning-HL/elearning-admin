@@ -1,5 +1,5 @@
 export const DEV_API_HOST =
-  REACT_APP_ENV === 'dev' ? 'http://localhost:3002' : 'http://localhost:3002';
+  REACT_APP_ENV === 'dev' ? 'http://localhost:3000' : 'http://localhost:3000';
 export const FORM_TYPE = { EDIT: 'EDIT' };
 export const DEFAULT_LIST_WEEKDAY = [
   { work: false },

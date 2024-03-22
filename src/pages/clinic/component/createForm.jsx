@@ -4,6 +4,10 @@ import {
   PlusSquareOutlined,
   AntDesignOutlined,
   UploadOutlined,
+  AppstoreOutlined,
+  MailOutlined,
+  InfoCircleOutlined,
+  SortAscendingOutlined,
 } from '@ant-design/icons';
 import { history } from '@umijs/max';
 import {
@@ -23,12 +27,16 @@ import {
   Upload,
   Avatar,
   Image,
+  Popconfirm,
+  Menu,
+  Collapse,
 } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { strVNForSearch, toSlug } from '../../../common/util';
 import { DEFAULT_LIST_WEEKDAY } from '../../../const/const';
 import CreateDoctorForm from '../../doctor/component/createForm';
+import { DragSortTable } from '@ant-design/pro-components';
 import {
   createClinic,
   getClinic,
@@ -47,7 +55,6 @@ import './index.less';
 import _ from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -82,7 +89,7 @@ const CreateClinicForm = (props) => {
   const [dataCsv, setdataCSV] = useState(false);
   const [idDotorCreate, setIdDotorCreate] = useState(null);
   const [dataServiceCopilot, setDataServiceCopilot] = useState([]);
-  const [website, setWebsite] = useState(null)
+  const [website, setWebsite] = useState(null);
 
   const fillterOption = (input, option) => {
     if (option.props.value) {
@@ -91,32 +98,32 @@ const CreateClinicForm = (props) => {
       return false;
     }
   };
-  useEffect(() => {
-    async function fetchData() {
-      setLoadingPage(true);
-      const results = await Promise.all([
-        getListSpecialization(),
-        getListProvince(),
-        getListService(),
-        getListTag(),
-        getListDoctor(props.id),
-        getListImage(props.id),
-      ]);
-      console.log('results', results[5]);
-      setDataCreate({
-        listProvine: results[1],
-        listSpecialization: results[0],
-        listService: results[2],
-        listTag: results[3],
-        // listDoctor: results[4],
-        listImage: results[5],
-      });
-      setDataCreateDoctor(results[4].data.data);
-      setLoadingPage(false);
-    }
-    form.setFieldsValue({ time: [moment('8:00', 'HH:mm'), moment('20:00', 'HH:mm')] });
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     setLoadingPage(true);
+  //     const results = await Promise.all([
+  //       getListSpecialization(),
+  //       getListProvince(),
+  //       getListService(),
+  //       getListTag(),
+  //       getListDoctor(props.id),
+  //       getListImage(props.id),
+  //     ]);
+  //     console.log('results', results[5]);
+  //     setDataCreate({
+  //       listProvine: results[1],
+  //       listSpecialization: results[0],
+  //       listService: results[2],
+  //       listTag: results[3],
+  //       // listDoctor: results[4],
+  //       listImage: results[5],
+  //     });
+  //     setDataCreateDoctor(results[4].data.data);
+  //     setLoadingPage(false);
+  //   }
+  //   form.setFieldsValue({ time: [moment('8:00', 'HH:mm'), moment('20:00', 'HH:mm')] });
+  //   fetchData();
+  // }, []);
 
   //handle import csv
   useEffect(() => {
@@ -135,9 +142,9 @@ const CreateClinicForm = (props) => {
         if (specialization_clinic.length > 0) {
           form.setFieldValue('specialization', specialization_clinic);
         }
-        form.setFields([{ name: "errors", errors: [] }]);
+        form.setFields([{ name: 'errors', errors: [] }]);
       } catch (e) {
-        form.setFields([{ name: "specialization", errors: ['Data import error'] }]);
+        form.setFields([{ name: 'specialization', errors: ['Data import error'] }]);
       }
     }
 
@@ -150,9 +157,9 @@ const CreateClinicForm = (props) => {
         if (dataPhone.length > 0) {
           form.setFieldValue('phone', dataPhone);
         }
-        form.setFields([{ name: "errors", errors: [] }]);
+        form.setFields([{ name: 'errors', errors: [] }]);
       } catch (e) {
-        form.setFields([{ name: "phone", errors: ['Data import error'] }]);
+        form.setFields([{ name: 'phone', errors: ['Data import error'] }]);
       }
     }
 
@@ -185,9 +192,9 @@ const CreateClinicForm = (props) => {
         if (dataCategoryService.length > 0) {
           form.setFieldValue('category_service_clinic', dataCategoryService);
         }
-        form.setFields([{ name: "errors", errors: [] }]);
+        form.setFields([{ name: 'errors', errors: [] }]);
       } catch (e) {
-        form.setFields([{ name: "category_service_clinic", errors: ['Data import error'] }]);
+        form.setFields([{ name: 'category_service_clinic', errors: ['Data import error'] }]);
       }
     }
 
@@ -196,7 +203,7 @@ const CreateClinicForm = (props) => {
       try {
         const newDistrits = [];
         const dataAddress = [];
-        const address_copilot = dataServiceCopilot.address[0]
+        const address_copilot = dataServiceCopilot.address[0];
 
         dataCreate.listProvine.data.map(async (item) => {
           if (item.name.includes(address_copilot.province)) {
@@ -213,11 +220,11 @@ const CreateClinicForm = (props) => {
             });
             console.log('dataAddress', dataAddress);
             form.setFieldValue('list_address', dataAddress);
-            form.setFields([{ name: "errors", errors: [] }]);
+            form.setFields([{ name: 'errors', errors: [] }]);
           }
         });
       } catch (e) {
-        form.setFields([{ name: "list_address", errors: ['Data import error'] }]);
+        form.setFields([{ name: 'list_address', errors: ['Data import error'] }]);
       }
     }
     // [TODO] workday
@@ -296,7 +303,7 @@ const CreateClinicForm = (props) => {
           }),
         );
         setDistricts(newDistrits);
-        
+
         const dataAddress = newDataEdit.address.map((item) => {
           console.log('item?.latitude', item);
           return {
@@ -316,10 +323,14 @@ const CreateClinicForm = (props) => {
               amount: element.amount,
               unit: element.unit,
               guarantee: element.guarantee,
-              id: element.id
+              id: element.id,
             };
           });
-          return { category_service_id: item.category_service?.id, service: dataService, id: item.id };
+          return {
+            category_service_id: item.category_service?.id,
+            service: dataService,
+            id: item.id,
+          };
         });
 
         const dataTag = newDataEdit.tag_clinic.map((item) => {
@@ -327,13 +338,15 @@ const CreateClinicForm = (props) => {
         });
 
         const listImage = await getListImage(props.id);
-        const dataImage = listImage?.data ? listImage?.data?.map((item) => {
-          return {
-            link: item?.link,
-            image_type: item?.image_type,
-            id: item?.id
-          };
-        }) : [];
+        const dataImage = listImage?.data
+          ? listImage?.data?.map((item) => {
+              return {
+                link: item?.link,
+                image_type: item?.image_type,
+                id: item?.id,
+              };
+            })
+          : [];
 
         // Set url s3 show view
         // setFileBanner(dataImage.find((item) => item.image_type === 'BANNER')?.link);
@@ -347,10 +360,9 @@ const CreateClinicForm = (props) => {
           moment(newDataEdit.time_end ? newDataEdit.time_end : '20:00', 'HH:mm'),
         ];
 
-        const dataLogo = dataImage.find((item) => item.image_type === 'AVATAR')
+        const dataLogo = dataImage.find((item) => item.image_type === 'AVATAR');
         const dataImageIntroduce = dataImage.filter((item) => item.image_type === 'INTRODUCE');
         const dataCover = dataImage.find((item) => item.image_type === 'BANNER');
-
 
         form.setFieldsValue({
           ...newDataEdit,
@@ -364,35 +376,35 @@ const CreateClinicForm = (props) => {
           // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
           logo: dataLogo
             ? [
-              {
-                uid: dataLogo.id,
-                name: 'Hình ảnh',
-                status: 'done',
-                url: dataLogo?.link,
-              },
-            ]
+                {
+                  uid: dataLogo.id,
+                  name: 'Hình ảnh',
+                  status: 'done',
+                  url: dataLogo?.link,
+                },
+              ]
             : [],
           logoId: dataLogo?.id,
           cover: dataCover
             ? [
-              {
-                uid: dataCover.id,
-                name: 'Hình ảnh',
-                status: 'done',
-                url: dataCover?.link,
-              },
-            ]
+                {
+                  uid: dataCover.id,
+                  name: 'Hình ảnh',
+                  status: 'done',
+                  url: dataCover?.link,
+                },
+              ]
             : [],
           coverId: dataCover?.id,
           image_introduce: dataImageIntroduce
             ? dataImageIntroduce.map((item) => {
-              return {
-                uid: item.id,
-                name: 'Hình ảnh',
-                status: 'done',
-                url: item?.link,
-              };
-            })
+                return {
+                  uid: item.id,
+                  name: 'Hình ảnh',
+                  status: 'done',
+                  url: item?.link,
+                };
+              })
             : [],
           doctor: dataDoctor,
         });
@@ -413,20 +425,16 @@ const CreateClinicForm = (props) => {
 
   // upload Image introduce
   const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    const isMp4OrMov = file.type === 'video/mp4' || file.type === 'image/quicktime';
     if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-      
+      message.error('You can only upload MP4/MOV file!');
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
+    return isMp4OrMov;
   };
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+  const [current, setCurrent] = useState('edit');
 
   const onPreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -438,11 +446,116 @@ const CreateClinicForm = (props) => {
   const debounceOnChangeInputName = _.debounce((event) => {
     form.setFieldsValue({ slug: toSlug(event) });
   }, 300);
+
+  const items = [
+    {
+      label: 'Thông tin chung',
+      key: 'edit',
+      icon: <InfoCircleOutlined />,
+    },
+    {
+      label: 'Sắp xếp khóa học',
+      key: 'sort',
+      icon: <SortAscendingOutlined />,
+    },
+  ];
+
+  //data collumns và data cần sửa lại
+  const columns = [
+    {
+      dataIndex: 'sort',
+      width: 60,
+      className: 'drag-visible',
+      title: 123,
+    },
+    {
+      dataIndex: 'name',
+      className: 'drag-visible',
+      title: 123,
+    },
+    {
+      dataIndex: 'age',
+      title: 123,
+    },
+    {
+      dataIndex: 'address',
+      title: 123,
+    },
+  ];
+
+  const data = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+    },
+  ];
+
+  const { Panel } = Collapse;
+
+  const [dataSource, setDataSource] = useState(data);
+
   const renderCreateForm = () => {
     return (
       <div>
-        <Row>
-          <Col xs={24}>
+        {/* type edit thì mới xuất hiện  */}
+        <div span={24} className="wp-edit-menu">
+          <Menu
+            onClick={(e) => setCurrent(e.key)}
+            selectedKeys={[current]}
+            mode="horizontal"
+            items={items}
+            className="edit-menu"
+          />
+        </div>
+
+        {/* Hiển thị collapse khi menu đổi sang collapse */}
+        {/* Khi nào current là sort và props type là EDIT */}
+        {/* {current === 'sort' && props.type === 'EDIT' && ( */}
+        {current === 'sort' && (
+          <Collapse defaultActiveKey={['1']}>
+            <Panel header="Drag Sort Table" key="1">
+              <DragSortTable
+                columns={columns}
+                rowKey="key"
+                toolBarRender={false}
+                search={false}
+                pagination={false}
+                dataSource={dataSource}
+                dragSortKey="sort"
+                // onDragSortEnd={handleDragSortEnd}
+              />
+            </Panel>
+            <Panel header="Drag Sort Table" key="2">
+              <DragSortTable
+                columns={columns}
+                rowKey="key"
+                search={false}
+                pagination={false}
+                dataSource={dataSource}
+                dragSortKey="sort"
+                // onDragSortEnd={handleDragSortEnd}
+              />
+            </Panel>
+          </Collapse>
+        )}
+
+        {current === 'edit' && (
+          <Row>
+            {/* <Col xs={24}>
             <Button
               className="button-add-csv"
               type="dashed"
@@ -452,32 +565,35 @@ const CreateClinicForm = (props) => {
             >
               + CSV
             </Button>
-          </Col>
-          <br />
-          <br />
-          {/* Name */}
-          <Col xs={12} className="padding-right">
-            <FormItem
-              label="Tên Nha khoa"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Bạn chưa điền Tên Nha khoa',
-                },
-              ]}
-            >
-              <Input
-                placeholder="Ví dụ: Nha Khoa Hải Anh"
-                onChange={(event) => {
-                  event.persist();
-                  debounceOnChangeInputName(event.target.value);
-                }}
-              />
-            </FormItem>
-          </Col>
-          {/* Slug */}
-          <Col xs={12}>
+          </Col> */}
+            {/* Name */}
+            <Col xs={12} className="padding-right">
+              <FormItem
+                label="Tên Khóa Học"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa điền Tên Khóa Học',
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="Ví dụ: Bứt phá IELTS 3.0 - 4.5"
+                  onChange={(event) => {
+                    event.persist();
+                    debounceOnChangeInputName(event.target.value);
+                  }}
+                />
+              </FormItem>
+            </Col>
+            <Col xs={24} xl={12} className="padding-right">
+              <Form.Item label="Giá" name="price">
+                <Input type="number" placeholder="Ví dụ: 800,000" />
+              </Form.Item>
+            </Col>
+            {/* Slug */}
+            {/* <Col xs={12}>
             <FormItem
               label="Slug"
               name="slug"
@@ -490,12 +606,11 @@ const CreateClinicForm = (props) => {
             >
               <Input placeholder="Ví dụ: nha-khoa-hai-anh" />
             </FormItem>
-          </Col>
-
-          {/* Logo */}
-          <Col xs={24} xl={12} className="padding-right">
+          </Col> */}
+            {/* Logo */}
+            {/* <Col xs={24} xl={12} className="padding-right">
             <FormItem
-              label="Logo Nha khoa"
+              label="Ảnh bìa"
               name="logo"
               valuePropName="fileList"
               getValueFromEvent={normFile}
@@ -512,32 +627,31 @@ const CreateClinicForm = (props) => {
                 <Button icon={<UploadOutlined />}>Upload</Button>
               </Upload>
             </FormItem>
-          </Col>
-          {/* Cover */}
-          <Col xs={24} xl={12}>
-            {/* <Image name="banner_url" width={263} height={100} src={fileBanner} /> */}
-            <FormItem
-              label="Ảnh Bìa"
-              name="cover"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <Upload
-                listType="picture"
-                maxCount={1}
-                beforeUpload={beforeUpload}
-                // onChange={handleChangeBanner}
-                onChange={() => {
-                  form.setFieldsValue({ coverId: undefined });
-                }}
-                onPreview={onPreview}
+          </Col> */}
+            {/* Cover */}
+            <Col xs={24} xl={12}>
+              <FormItem
+                label="Ảnh Bìa"
+                name="cover"
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
               >
-                <Button icon={<UploadOutlined />}>Upload</Button>
-              </Upload>
-            </FormItem>
-          </Col>
-          {/* Introduce */}
-          <Col xs={24} xl={24}>
+                <Upload
+                  listType="picture"
+                  accept="image/*"
+                  maxCount={1}
+                  // beforeUpload={beforeUpload}
+                  onChange={() => {
+                    form.setFieldsValue({ coverId: undefined });
+                  }}
+                  onPreview={onPreview}
+                >
+                  <Button icon={<UploadOutlined />}>Upload</Button>
+                </Upload>
+              </FormItem>
+            </Col>
+            {/* Introduce */}
+            {/* <Col xs={24} xl={24}>
             <FormItem
               label="Thêm Ảnh giới thiệu"
               name="image_introduce"
@@ -554,10 +668,10 @@ const CreateClinicForm = (props) => {
                 + Upload
               </Upload>
             </FormItem>
-          </Col>
-          <Divider />
-          {/* Time */}
-          <Col xs={24} lg={8}>
+          </Col> */}
+            {/* <Divider /> */}
+            {/* Time */}
+            {/* <Col xs={24} lg={8}>
             <FormItem
               label="Thời gian hoạt động"
               name="time"
@@ -570,9 +684,9 @@ const CreateClinicForm = (props) => {
             >
               <TimePicker.RangePicker format="HH:mm" minuteStep={15} />
             </FormItem>
-          </Col>
-          {/* Weekday */}
-          <Col xs={24} lg={16}>
+          </Col> */}
+            {/* Weekday */}
+            {/* <Col xs={24} lg={16}>
             <div>Ngày hoạt động</div>
             <Form.List
               name="weekday"
@@ -614,9 +728,9 @@ const CreateClinicForm = (props) => {
                 </div>
               )}
             </Form.List>
-          </Col>
-          {/* Phone number */}
-          <Col xs={24} lg={8}>
+          </Col> */}
+            {/* Phone number */}
+            {/* <Col xs={24} lg={8}>
             <Form.List name="phone" initialValue={[{}]}>
               {(fields, { add, remove }) => (
                 <>
@@ -650,9 +764,9 @@ const CreateClinicForm = (props) => {
                 </>
               )}
             </Form.List>
-          </Col>
-          {/* Address */}
-          <Col xs={24}>
+          </Col> */}
+            {/* Address */}
+            {/* <Col xs={24}>
             <Form.List name="list_address" initialValue={[{}]}>
               {(fields, {}) => (
                 <>
@@ -747,62 +861,48 @@ const CreateClinicForm = (props) => {
                       </Row>
                     </Card>
                   ))}
-                  {/* <Button
-                    className="button-add-address"
-                    type="dashed"
-                    onClick={() => {
-                      add();
-                      const newDistrict = [...districts];
-                      newDistrict.push([]);
-                      setDistricts(newDistrict);
-                    }}
-                    block
-                  >
-                    + Thêm cơ sở
-                  </Button> */}
                 </>
               )}
             </Form.List>
-          </Col>
-          {/* Introduce */}
-          <Col xs={24} style={{ marginTop: 15 }}>
-            <Form.Item
-              name="introduce"
-              label="Giới thiệu"
-              style={{ width: '100%' }}
-              initialValue={''}
-            >
-              {/* <Input.TextArea rows={6} /> */}
-              <ReactQuill
-                theme="snow"
-                modules={{
-                  toolbar: [
-                    [{ header: [1, 2, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-                    [{ color: [] }, { background: [] }],
-                    ['clean'],
-                  ],
-                }}
-                formats={[
-                  'header',
-                  'bold',
-                  'italic',
-                  'underline',
-                  'strike',
-                  'list',
-                  'bullet',
-                  'indent',
+          </Col> */}
+            {/* Introduce */}
+            <Col xs={24} style={{ marginTop: 15 }}>
+              <Form.Item
+                name="introduce"
+                label="Giới thiệu"
+                style={{ width: '100%' }}
+                initialValue={''}
+              >
+                {/* <Input.TextArea rows={6} /> */}
+                <ReactQuill
+                  theme="snow"
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }],
+                      ['bold', 'italic', 'underline', 'strike'],
+                      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+                      [{ color: [] }, { background: [] }],
+                      ['clean'],
+                    ],
+                  }}
+                  formats={[
+                    'header',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'strike',
+                    'list',
+                    'bullet',
+                    'indent',
 
-                  'color',
-                  'background',
-                ]}
-              />
-            </Form.Item>
-          </Col>
-
-          {/* Specialization */}
-          <Col xs={24}>
+                    'color',
+                    'background',
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+            {/* Specialization */}
+            {/* <Col xs={24}>
             <Form.Item label="Chuyên khoa" name={'specialization'} initialValue={[]}>
               <Select
                 style={{
@@ -824,9 +924,9 @@ const CreateClinicForm = (props) => {
                   })}
               </Select>
             </Form.Item>
-          </Col>
-          {/* Tag */}
-          <Col xs={24}>
+          </Col> */}
+            {/* Tag */}
+            {/* <Col xs={24}>
             <Form.Item label="Tiện ích" name={'tag'} initialValue={[]}>
               <Select
                 style={{
@@ -848,154 +948,203 @@ const CreateClinicForm = (props) => {
                   })}
               </Select>
             </Form.Item>
-          </Col>
-          <Divider />
-          {/* Service */}
-          <Col xs={24} style={{ marginBottom: 15 }}>
-            <Form.List name="category_service_clinic" initialValue={[{}]}>
-              {(fields, { add, remove }) => (
-                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Dịch vụ ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      }
-                    >
-                      <Form.Item
-                        label="Dịch vụ"
-                        name={[field.name, 'category_service_id']}
-                        rules={[
-                          {
-                            required: false,
-                            message: 'Bạn chưa chọn Dịch vụ',
-                          },
-                        ]}
-                      >
-                        <Select
-                          style={{
-                            width: '91%',
-                          }}
-                          showSearch
-                          filterOption={fillterOption}
-                          placeholder="Chọn Dịch vụ"
-                        >
-                          {dataCreate &&
-                            dataCreate.listService &&
-                            dataCreate.listService.data.map((service) => {
-                              return (
-                                <Option key={service.id} value={service.id}>
-                                  {service.name}
-                                </Option>
-                              );
-                            })}
-                        </Select>
-                      </Form.Item>
-
-                      <Form.Item>
-                        <Form.List name={[field.name, 'service']} initialValue={[{}]}>
-                          {(subFields, subOpt) => (
-                            <div style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}>
-                              {subFields.map((subField) => (
-                                <Row key={subField.key} className="row-service">
-                                  <Col xs={24} xl={6} className="padding-right">
-                                    <Form.Item
-                                      label="Tên dịch vụ"
-                                      name={[subField.name, 'name']}
-                                      rules={[
-                                        {
-                                          required: false,
-                                          message: 'Bạn chưa điền Tên dịch vụ',
-                                        },
-                                      ]}
-                                    >
-                                      <Input placeholder="Ví dụ: Trồng răng Implant" />
-                                    </Form.Item>
-                                  </Col>
-                                  <Col xs={24} xl={6} className="padding-right">
-                                    <Form.Item label="Giá" name={[subField.name, 'amount']}>
-                                      <Input type="number" placeholder="Ví dụ: 800,000" />
-                                    </Form.Item>
-                                  </Col>
-                                  <Col xs={24} xl={4} className="padding-right">
-                                    <Form.Item label="Đơn vị" name={[subField.name, 'unit']}>
-                                      <Input placeholder="Ví dụ: 1 Răng" />
-                                    </Form.Item>
-                                  </Col>
-                                  <Col xs={24} xl={6} className="padding-right">
-                                    <Form.Item label="Bảo hành" name={[subField.name, 'guarantee']}>
-                                      <Input placeholder="Ví dụ: 8 Năm" />
-                                    </Form.Item>
-                                  </Col>
-                                  <CloseOutlined
-                                    onClick={() => {
-                                      subOpt.remove(subField.name);
-                                    }}
-                                  />
-                                </Row>
-                              ))}
-                              <Button
-                                className="button-add"
-                                type="dashed"
-                                onClick={() => subOpt.add()}
-                                block
+          </Col> */}
+            <Divider />
+            {/* Service */}
+            <Col xs={24} style={{ marginBottom: 15 }}>
+              <Form.List name="course_section" initialValue={[{}]}>
+                {(fields, { add, remove }) => (
+                  <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                    {fields.map((field) => {
+                      return (
+                        <Card
+                          size="small"
+                          title={
+                            <div className="header-card">
+                              <span>Tên section</span>
+                              <Form.Item
+                                // label="Tên dịch vụ"
+                                name={[field.name, 'section_name']}
+                                rules={[
+                                  {
+                                    required: false,
+                                    message: 'Bạn chưa nhập tên section',
+                                  },
+                                ]}
                               >
-                                + Thêm dòng
-                              </Button>
+                                <Input placeholder="Ví dụ: Unit 1: Start up"></Input>
+                              </Form.Item>
                             </div>
-                          )}
-                        </Form.List>
-                      </Form.Item>
-                    </Card>
-                  ))}
+                          }
+                          key={field.key}
+                          extra={
+                            <Popconfirm
+                              title="Bạn có chắc chắn xóa không?"
+                              placement="topRight"
+                              onConfirm={() => {
+                                remove(field.name);
+                              }}
+                              okText="Ok"
+                              cancelText="Hủy"
+                            >
+                              <CloseOutlined />
+                            </Popconfirm>
+                          }
+                        >
+                          {/* <Form.Item
+      label="Dịch vụ"
+      name={[field.name, 'category_service_id']}
+      rules={[
+        {
+          required: false,
+          message: 'Bạn chưa chọn Dịch vụ',
+        },
+      ]}
+    >
+      <Select
+        style={{
+          width: '91%',
+        }}
+        showSearch
+        filterOption={fillterOption}
+        placeholder="Chọn Dịch vụ"
+      >
+        {dataCreate &&
+          dataCreate.listService &&
+          dataCreate.listService.data.map((service) => {
+            return (
+              <Option key={service.id} value={service.id}>
+                {service.name}
+              </Option>
+            );
+          })}
+      </Select>
+    </Form.Item> */}
 
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Loại dịch vụ
-                  </Button>
-                </div>
-              )}
-            </Form.List>
-          </Col>
+                          <Form.Item>
+                            <Form.List name={[field.name, 'lesson']} initialValue={[{}]}>
+                              {(subFields, subOpt) => (
+                                <div
+                                  style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}
+                                >
+                                  {subFields.map((subField) => (
+                                    <Row key={subField.key} className="row-service">
+                                      <Col xs={24} xl={12} className="padding-right">
+                                        <Form.Item
+                                          label="Lesson: "
+                                          name={[subField.name, 'name']}
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message: 'Bạn chưa điền Tên dịch vụ',
+                                            },
+                                          ]}
+                                        >
+                                          <Input placeholder="Ví dụ: Speaking: Talk about your day" />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col xs={24} xl={10} style={{ marginRight: 10 }}>
+                                        <FormItem
+                                          label="Video"
+                                          name={[subField.name, 'video']}
+                                          valuePropName="fileList"
+                                          getValueFromEvent={normFile}
+                                        >
+                                          <Upload
+                                            listType="picture"
+                                            accept="video/*"
+                                            maxCount={1}
+                                            // onChange={handleChangeBanner}
+                                            onChange={(info) => {
+                                              console.log('infoo', info);
+                                              // if (info.file.status !== 'uploading') {
+                                              //   console.log(info.file, info.fileList);
+                                              // }
+                                              // if (info.file.status === 'done') {
+                                              //   message.success(`${info.file.name} file uploaded successfully`);
+                                              // } else if (info.file.status === 'error') {
+                                              //   message.error(`${info.file.name} file upload failed.`);
+                                              // }
+                                            }}
+                                            // progress={{
+                                            //   strokeColor: {
+                                            //     '0%': '#108ee9',
+                                            //     '100%': '#87d068',
+                                            //   },
+                                            //   strokeWidth: 3,
+                                            //   format: (percent) =>
+                                            //     percent && `${parseFloat(percent.toFixed(2))}%`,
+                                            // }}
+                                            // onPreview={onPreview}
+                                            customRequest={async ({ onSuccess, file, onError }) => {
+                                              const isMp4OrMov =
+                                                file.type === 'video/mp4' ||
+                                                file.type === 'video/quicktime';
+                                              if (!isMp4OrMov) {
+                                                message.error('You can only upload Mp4/Mov file!');
+                                                onError();
+                                              }
+                                              const isLt300M = file.size / 1024 / 1024 < 300;
+                                              if (!isLt300M) {
+                                                message.error('Video must smaller than 300MB!');
+                                                onError();
+                                              }
+                                              if (isMp4OrMov && isLt300M) {
+                                                // console.log(file)
+                                                const base64 = await getNewBase64(file);
+                                                onSuccess(base64);
+                                              }
+                                            }}
+                                          >
+                                            <Button icon={<UploadOutlined />}>Upload</Button>
+                                          </Upload>
+                                        </FormItem>
+                                      </Col>
+                                      <Popconfirm
+                                        title="Bạn có chắc chắn xóa không?"
+                                        placement="topRight"
+                                        onConfirm={() => {
+                                          subOpt.remove(subField.name);
+                                        }}
+                                        okText="Ok"
+                                        cancelText="Hủy"
+                                      >
+                                        <CloseOutlined
+                                          style={{
+                                            display: 'flex',
+                                            alignItems: 'flex-start',
+                                            cursor: 'pointer',
+                                          }}
+                                        />
+                                      </Popconfirm>
+                                    </Row>
+                                  ))}
+                                  <Button
+                                    className="button-add"
+                                    type="dashed"
+                                    onClick={() => subOpt.add()}
+                                    block
+                                  >
+                                    + Thêm lesson
+                                  </Button>
+                                </div>
+                              )}
+                            </Form.List>
+                          </Form.Item>
+                        </Card>
+                      );
+                    })}
 
-          {/* Doctor */}
-          <Col xs={24}>
-            <Form.Item label="Bác sĩ" name={'doctor'} initialValue={[]}>
-              <Select
-                style={{
-                  width: '100%',
-                }}
-                mode="multiple"
-                showSearch
-                filterOption={fillterOption}
-                placeholder="Chọn Bác sĩ"
-              >
-                {dataCreateDoctor &&
-                  dataCreateDoctor.map((doctor) => {
-                    return (
-                      <Option key={doctor.id} value={doctor.id}>
-                        {doctor.name}
-                      </Option>
-                    );
-                  })}
-              </Select>
-            </Form.Item>
-            {/* <Button
-              className="button-add-doctor"
-              type="dashed"
-              onClick={() => {
-                setCreateDoctorModalVisible(true);
-              }}
-            >
-              + Tạo Bác sĩ
-            </Button> */}
-          </Col>
-        </Row>
+                    <Button type="dashed" onClick={() => add()} block>
+                      + Thêm section
+                    </Button>
+                  </div>
+                )}
+              </Form.List>
+            </Col>
+          </Row>
+        )}
+
         <FormItem className="wrapper-button-submit">
           <Button
             size="large"
@@ -1007,7 +1156,7 @@ const CreateClinicForm = (props) => {
           >
             {loading && <LoadingOutlined />}
             {!loading && props.type !== 'EDIT' && <PlusSquareOutlined style={{ marginRight: 5 }} />}
-            {props.type !== 'EDIT' ? <div>Tạo Phòng Khám</div> : 'Sửa Phòng khám'}
+            {props.type !== 'EDIT' ? <div>Tạo khóa học</div> : 'Sửa Phòng khám'}
           </Button>
         </FormItem>
       </div>
@@ -1024,66 +1173,65 @@ const CreateClinicForm = (props) => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
     console.log('fieldsValue', fieldsValue);
-    const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
-    const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
+    // const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
+    // const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
 
-    if (!fieldsValue.image_introduce) {
-      fieldsValue.image_introduce = []
-    }
+    // if (!fieldsValue.image_introduce) {
+    //   fieldsValue.image_introduce = [];
+    // }
 
-    const introduceImage = await Promise.all(fieldsValue.image_introduce.map(async (item) => {
-      if (item?.originFileObj) {
-        item.dataBase64 = await getNewBase64(item?.originFileObj);
-      }
-      return {
-        link: item,
-        image_type: 'INTRODUCE',
-        id: item.url ? item.uid : undefined,
-      };
-    }));
-    console.log('introduceImage', introduceImage);
-    let dataFieldsValueLogo = {}
-    if (fieldsValue.logo && fieldsValue.logo[0]) {
-      if (fieldsValue.logo[0]?.originFileObj) {
-        fieldsValue.logo[0].dataBase64 = await getNewBase64(
-          fieldsValue.logo[0]?.originFileObj,
-        );
-      }
-      dataFieldsValueLogo = fieldsValue.logo[0];
-    }
+    // const introduceImage = await Promise.all(
+    //   fieldsValue.image_introduce.map(async (item) => {
+    //     if (item?.originFileObj) {
+    //       item.dataBase64 = await getNewBase64(item?.originFileObj);
+    //     }
+    //     return {
+    //       link: item,
+    //       image_type: 'INTRODUCE',
+    //       id: item.url ? item.uid : undefined,
+    //     };
+    //   }),
+    // );
+    // console.log('introduceImage', introduceImage);
+    // let dataFieldsValueLogo = {};
+    // if (fieldsValue.logo && fieldsValue.logo[0]) {
+    //   if (fieldsValue.logo[0]?.originFileObj) {
+    //     fieldsValue.logo[0].dataBase64 = await getNewBase64(fieldsValue.logo[0]?.originFileObj);
+    //   }
+    //   dataFieldsValueLogo = fieldsValue.logo[0];
+    // }
 
-    let dataFieldsValueCover = {};
-    if (fieldsValue.cover && fieldsValue.cover[0]) {
-      if (fieldsValue.cover[0]?.originFileObj) {
-        fieldsValue.cover[0].dataBase64 = await getNewBase64(fieldsValue.cover[0]?.originFileObj);
-      }
-      dataFieldsValueCover = fieldsValue.cover[0];
-    }
+    // let dataFieldsValueCover = {};
+    // if (fieldsValue.cover && fieldsValue.cover[0]) {
+    //   if (fieldsValue.cover[0]?.originFileObj) {
+    //     fieldsValue.cover[0].dataBase64 = await getNewBase64(fieldsValue.cover[0]?.originFileObj);
+    //   }
+    //   dataFieldsValueCover = fieldsValue.cover[0];
+    // }
 
+    // const newImage = [
+    //   { link: dataFieldsValueLogo, image_type: 'AVATAR', id: form.getFieldValue('logoId') },
+    //   { link: dataFieldsValueCover, image_type: 'BANNER', id: form.getFieldValue('coverId') },
+    //   ...introduceImage,
+    // ];
 
-    const newImage = [
-      { link: dataFieldsValueLogo, image_type: 'AVATAR', id: form.getFieldValue('logoId') },
-      { link: dataFieldsValueCover, image_type: 'BANNER', id: form.getFieldValue('coverId') },
-      ...introduceImage,
-    ];
+    // console.log('newImage', newImage);
 
-    console.log('newImage', newImage);
-
-    if (props.type === 'EDIT') {
-      const result = await updateClinic(
-        { ...fieldsValue, time_start, time_end, images: newImage },
-        props.id,
-      );
-      if (result.status === 200) {
-        props.onDone();
-      }
-    } else {
-      const result = await createClinic({ ...fieldsValue, time_start, time_end, images: newImage });
-      if (result.status === 200) {
-        form.resetFields();
-        history.push('/clinic');
-      }
-    }
+    // if (props.type === 'EDIT') {
+    //   const result = await updateClinic(
+    //     { ...fieldsValue, time_start, time_end, images: newImage },
+    //     props.id,
+    //   );
+    //   if (result.status === 200) {
+    //     props.onDone();
+    //   }
+    // } else {
+    //   const result = await createClinic({ ...fieldsValue, time_start, time_end, images: newImage });
+    //   if (result.status === 200) {
+    //     form.resetFields();
+    //     history.push('/clinic');
+    //   }
+    // }
 
     setLoading(false);
   };
@@ -1100,7 +1248,7 @@ const CreateClinicForm = (props) => {
       >
         {loadingPage ? <Skeleton /> : renderCreateForm()}
       </Form>
-      <Modal
+      {/* <Modal
         title="Tạo bác sĩ"
         visible={createDoctorModalVisible}
         // onOk={handleOk}
@@ -1119,8 +1267,8 @@ const CreateClinicForm = (props) => {
             setCreateDoctorModalVisible(false);
           }}
         />
-      </Modal>
-      <Modal
+      </Modal> */}
+      {/* <Modal
         title="CSV"
         visible={dataCsv}
         // onOk={handleOk}
@@ -1140,8 +1288,8 @@ const CreateClinicForm = (props) => {
           }}
           website={website}
         />
-      </Modal>
-      <Modal
+      </Modal> */}
+      {/* <Modal
         open={previewOpen}
         title={'Xem ảnh'}
         footer={null}
@@ -1154,7 +1302,7 @@ const CreateClinicForm = (props) => {
           }}
           src={previewImage}
         />
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

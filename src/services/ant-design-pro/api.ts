@@ -6,7 +6,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(id: number) {
-  return request(`${DEV_API_HOST}/admin/user/${id}`, {
+  return request(`${DEV_API_HOST}/api/users/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: any, options?: any) {
-  return request(`${DEV_API_HOST}/auth/login`, {
+  return request(`${DEV_API_HOST}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

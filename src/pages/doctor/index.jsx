@@ -64,7 +64,7 @@ const Doctor = () => {
 
         return (
           <Input
-            placeholder="Nhập tên bác sĩ"
+            placeholder="Nhập tên Assignments"
             onChange={(event) => {
               event.persist();
               form.setFieldsValue({ name: event.target.value });
@@ -208,7 +208,7 @@ const Doctor = () => {
                 history.push('/doctor/create');
               }}
             >
-              <PlusOutlined /> Thêm Bác Sĩ
+              <PlusOutlined /> Thêm Assignments
             </Button>,
           ]}
         />

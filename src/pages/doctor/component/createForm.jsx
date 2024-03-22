@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { LoadingOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Row, Select, Skeleton, message } from 'antd';
+import { Button, Col, Form, Input, Row, Select, Skeleton, message, Cascader, Divider } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
 import { createDoctor, editDoctor, getDoctor, getListService } from '../service';
@@ -14,6 +14,32 @@ const CreateDoctorForm = (props) => {
   const [loadingPage, setLoadingPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dataCreate, setDataCreate] = useState(null);
+  const [typeAssign, setTypeAssign] = useState(null);
+
+  // Example data for course
+  const courseOptions = [
+    {
+      value: 'zhejiang',
+      label: 'Zhejiang',
+    },
+    {
+      value: 'jiangsu',
+      label: 'Jiangsu',
+      children: [
+        {
+          value: 'nanjing',
+          label: 'Nanjing',
+          children: [
+            {
+              value: 'zhonghuamen',
+              label: 'Zhong Hua Men',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
   const fillterOption = (input, option) => {
     if (option.props.value) {
       return strVNForSearch(option.props.children).includes(strVNForSearch(input));
@@ -45,12 +71,11 @@ const CreateDoctorForm = (props) => {
     setLoading(false);
   };
   useEffect(() => {
-    async function fetchData() {
-      const results = await Promise.all([getListService()]);
-
-      setDataCreate(results[0]);
-    }
-    fetchData();
+    // async function fetchData() {
+    //   const results = await Promise.all([getListService()]);
+    //   setDataCreate(results[0]);
+    // }
+    // fetchData();
   }, []);
   useEffect(() => {
     async function fetchData() {
@@ -87,31 +112,98 @@ const CreateDoctorForm = (props) => {
           {/* Name */}
           <Col xs={24}>
             <FormItem
-              label="Tên Bác Sĩ"
+              label="Tên Assignments"
               name="name"
               rules={[
                 {
                   required: true,
-                  message: 'Bạn chưa điền Tên Bác Sĩ',
+                  message: 'Bạn chưa điền Assignments',
                 },
               ]}
             >
-              <Input placeholder="Ví dụ: Nguyễn Hải Anh" />
+              <Input placeholder="Ví dụ: Bài kiểm tra đầu vào" />
             </FormItem>
           </Col>
           {/* title */}
           <Col xs={24} xl={8} className="padding-right">
-            <FormItem label="Tên Chuyên Khoa" name="title">
-              <Input placeholder="Ví dụ: CKII" />
+            <FormItem
+              label="Loại Assignments"
+              name="type-assign"
+              rules={[
+                {
+                  required: true,
+                  message: 'Bạn chưa chọn loại Assignments',
+                },
+              ]}
+            >
+              <Select
+                placeholder="Chọn loại Assignments"
+                onChange={(e) => {
+                  setTypeAssign(e);
+                  form.setFieldValue('type-exam', ['LISTENING', 'READING']);
+                }}
+                options={[
+                  {
+                    value: 'EXERCISES',
+                    label: 'Exercises',
+                  },
+                  {
+                    value: 'TESTS',
+                    label: 'Tests',
+                  },
+                ]}
+              />
             </FormItem>
           </Col>
-          {/* avatar */}
           <Col xs={24} xl={8} className="padding-right">
-            <FormItem label="Ảnh đại diện" name="avatar">
-              <Input placeholder="Ví dụ: http://abc.com" />
+            <FormItem
+              label="Loại bài"
+              name="type-exam"
+              rules={[
+                {
+                  required: true,
+                  message: 'Bạn chưa chọn loại bài',
+                },
+              ]}
+            >
+              <Select
+                placeholder="Chọn loại bài"
+                mode="multiple"
+                disabled={typeAssign === 'TESTS' ? true : false}
+                options={[
+                  {
+                    value: 'LISTENING',
+                    label: 'Listening',
+                  },
+                  {
+                    value: 'READING',
+                    label: 'Reading',
+                  },
+                ]}
+              />
             </FormItem>
           </Col>
-          {/* experience time */}
+          {/* Chọn khóa học */}
+          <Col xs={24} xl={8} className="padding-right">
+            <FormItem
+              label="Chọn khóa học"
+              name="course_location"
+              rules={[
+                {
+                  required: true,
+                  message: 'Bạn chưa chọn khóa học',
+                },
+              ]}
+            >
+              <Cascader
+                options={courseOptions}
+                placeholder="Chọn khóa học"
+                disabled={typeAssign == null ? true : false}
+              />
+            </FormItem>
+          </Col>
+          <Divider />
+          {/* Tạo bài nghe */}  
           <Col xs={24} xl={8}>
             <FormItem label="Năm kinh nghiệm" name="experience_time">
               <Input placeholder="Ví dụ: 24 năm" />
@@ -182,7 +274,7 @@ Ngoài ra, bác sĩ Thái còn được mời làm Đại diện cho thương hi
           >
             {loading && <LoadingOutlined />}
             {!loading && props.type !== 'EDIT' && <PlusSquareOutlined style={{ marginRight: 5 }} />}
-            {props.type === 'EDIT' ? 'Chỉnh sửa thông tin' : <div>Tạo Bác Sĩ</div>}
+            {props.type === 'EDIT' ? 'Chỉnh sửa thông tin' : <div>Tạo Assignments</div>}
           </Button>
         </FormItem>
       </div>

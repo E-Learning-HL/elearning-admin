@@ -52,21 +52,33 @@ export default [
   //   component: './TableList',
   // },
   {
-    name: 'Phòng khám',
-    icon: `/image/icons8-clinic.png`,
+    name: 'Khóa học',
+    icon: `/image/icons8-course.png`,
     path: '/clinic',
-    component: './clinic',
+    // component: './clinic',
+    routes: [
+      {
+        path: '/clinic',
+        component: './clinic',
+      },
+      {
+        name: 'Tạo Khóa Học',
+        path: '/clinic/create',
+        component: './clinic/create',
+        hideInMenu: true,
+      },
+    ],
   },
+  // {
+  //   name: 'Tạo Khóa Học',
+  //   icon: `/image/icons8-clinic.png`,
+  //   path: '/clinic/create',
+  //   component: './clinic/create',
+  //   hideInMenu: true,
+  // },
   {
-    name: 'Tạo Phòng khám',
-    icon: `/image/icons8-clinic.png`,
-    path: '/clinic/create',
-    component: './clinic/create',
-    hideInMenu: true,
-  },
-  {
-    name: 'Thông tin liên hệ',
-    icon: `/image/icons8-list.png`,
+    name: 'Order',
+    icon: `/image/icons8-order.png`,
     path: '/information_clinic',
     component: './information_clinic',
   },
@@ -77,30 +89,30 @@ export default [
     hideInMenu: true,
   },
   {
-    name: 'Bác sĩ',
-    icon: `/image/icons8-doctor.png`,
+    name: 'Assignments',
+    icon: `/image/icons8-exam.png`,
     path: '/doctor',
     component: './doctor',
   },
   {
-    name: 'Tạo Bác sĩ',
+    name: 'Tạo Assignments',
     icon: `/image/icons8-clinic.png`,
     path: '/doctor/create',
     component: './doctor/create',
     hideInMenu: true,
   },
-  {
-    name: 'Thẻ',
-    icon: `/image/icons8-tag.png`,
-    path: '/tag',
-    component: './tag',
-  },
-  {
-    name: 'Loại dịch vụ',
-    icon: `/image/icons8-service.png`,
-    path: '/category-service',
-    component: './category_service',
-  },
+  // {
+  //   name: 'Exam',
+  //   icon: `/image/icons8-exam.png`,
+  //   path: '/tag',
+  //   component: './tag',
+  // },
+  // {
+  //   name: 'Loại dịch vụ',
+  //   icon: `/image/icons8-service.png`,
+  //   path: '/category-service',
+  //   component: './category_service',
+  // },
   {
     path: '/',
     redirect: '/clinic',
@@ -110,21 +122,27 @@ export default [
     layout: false,
     component: './404',
   },
+  // {
+  //   path: '/contact',
+  //   name: 'Danh sách liên hệ',
+  //   icon: `/image/icons8-phone.png`,
+  //   component: './contact',
+  // },
+  // {
+  //   path: '/contact/create',
+  //   layout: false,
+  //   routes: [
+  //     {
+  //       name: 'Form liên hệ',
+  //       path: '/contact/create',
+  //       component: './contact/create',
+  //     }
+  //   ],
+  // }
   {
-    path: '/contact',
-    name: 'Danh sách liên hệ',
-    icon: `/image/icons8-phone.png`,
-    component: './contact',
+    name: 'User',
+    icon: `/image/icons8-user.png`,
+    path: '/user_management',
+    component: './user_management',
   },
-  {
-    path: '/contact/create',
-    layout: false,
-    routes: [
-      {
-        name: 'Form liên hệ',
-        path: '/contact/create',
-        component: './contact/create',
-      }
-    ],
-  }
 ];

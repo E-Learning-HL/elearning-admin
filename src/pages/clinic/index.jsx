@@ -86,7 +86,7 @@ const Clinic = () => {
 
         return (
           <Input
-            placeholder="Nhập tên nha khoa"
+            placeholder="Nhập tên khóa học"
             onChange={(event) => {
               event.persist();
               form.setFieldsValue({ name: event.target.value });
@@ -108,39 +108,39 @@ const Clinic = () => {
         );
       },
     },
-    {
-      title: 'Thời gian làm việc',
-      dataIndex: 'time_start',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <div>
-            {entity.time_start} - {entity.time_end}
-          </div>
-        );
-      },
-    },
-    {
-      title: 'Chuyên Khoa',
-      dataIndex: 'specialization',
-      hideInSearch: true,
-      render: (_, entity) => {
-        const specialization_clinic = entity.specialization_clinic.map((item) => {
-          return item.specialization.name;
-        });
-        return (
-          <div>
-            {specialization_clinic.map((i) => {
-              return (
-                <div className="specialization" key={i}>
-                  {i}
-                </div>
-              );
-            })}
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: 'Thời gian làm việc',
+    //   dataIndex: 'time_start',
+    //   hideInSearch: true,
+    //   render: (dom, entity) => {
+    //     return (
+    //       <div>
+    //         {entity.time_start} - {entity.time_end}
+    //       </div>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: 'Chuyên Khoa',
+    //   dataIndex: 'specialization',
+    //   hideInSearch: true,
+    //   render: (_, entity) => {
+    //     const specialization_clinic = entity.specialization_clinic.map((item) => {
+    //       return item.specialization.name;
+    //     });
+    //     return (
+    //       <div>
+    //         {specialization_clinic.map((i) => {
+    //           return (
+    //             <div className="specialization" key={i}>
+    //               {i}
+    //             </div>
+    //           );
+    //         })}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: 'Điều khiển',
       dataIndex: 'option',
@@ -416,7 +416,7 @@ const Clinic = () => {
     <PageContainer>
       <ConfigProvider locale={viVnIntl}>
         <ProTable
-          headerTitle="Cơ sở nha khoa"
+          headerTitle="Khóa học"
           actionRef={actionRef}
           rowKey="id"
           request={async (params, sorter, filter) => {
@@ -441,7 +441,7 @@ const Clinic = () => {
                 history.push('/clinic/create');
               }}
             >
-              <PlusOutlined /> Thêm Phòng Khám
+              <PlusOutlined /> Thêm khóa học
             </Button>,
           ]}
         />
@@ -473,7 +473,7 @@ const Clinic = () => {
       <Modal
         transitionName=""
         maskTransitionName=""
-        title="Chỉnh sửa thông tin Phòng khám"
+        title="Chỉnh sửa khóa học"
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
