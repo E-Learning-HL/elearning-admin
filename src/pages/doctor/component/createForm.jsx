@@ -1,20 +1,62 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-import { LoadingOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Row, Select, Skeleton, message, Cascader, Divider } from 'antd';
+import {
+  LoadingOutlined,
+  PlusSquareOutlined,
+  UploadOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Skeleton,
+  message,
+  Cascader,
+  Divider,
+  Upload,
+  Card,
+  Popconfirm,
+  Checkbox,
+} from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
 import { createDoctor, editDoctor, getDoctor, getListService } from '../service';
 import './index.less';
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css';
 
 const { Option } = Select;
 const FormItem = Form.Item;
+const getNewBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+const normFile = (e) => {
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e?.fileList;
+};
 const CreateDoctorForm = (props) => {
   const [form] = Form.useForm();
   const [loadingPage, setLoadingPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dataCreate, setDataCreate] = useState(null);
   const [typeAssign, setTypeAssign] = useState(null);
+  const [renderTypeExam, setRenderTypeExam] = useState([]);
+
+  const editor = useRef();
+
+  const getSunEditorInstance = (sunEditor) => {
+    editor.current = sunEditor;
+  };
 
   // Example data for course
   const courseOptions = [
@@ -50,33 +92,33 @@ const CreateDoctorForm = (props) => {
   const onFinish = async () => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
-    const newImage = [{ link: fieldsValue.avatar, image_type: 'AVATAR' }];
+    // const newImage = [{ link: fieldsValue.avatar, image_type: 'AVATAR' }];
 
-    if (props.type === 'EDIT') {
-      const result = await editDoctor({ ...fieldsValue }, props.id);
-      if (result.status === 200) {
-        props.onDone();
-      }
-    } else {
-      const result = await createDoctor({ ...fieldsValue, images: newImage });
-      if (result.status === 200) {
-        form.resetFields();
-        history.push('/doctor');
-      }
-      if (props.type === 'CREATE-CLINIC') {
-        props.onDone(result.data.id);
-      }
-    }
+    console.log('fieldsValue', fieldsValue);
+
+    // if (props.type === 'EDIT') {
+    //   const result = await editDoctor({ ...fieldsValue }, props.id);
+    //   if (result.status === 200) {
+    //     props.onDone();
+    //   }
+    // } else {
+    //   const result = await createDoctor({ ...fieldsValue, images: newImage });
+    //   if (result.status === 200) {
+    //     form.resetFields();
+    //     history.push('/doctor');
+    //   }
+    //   if (props.type === 'CREATE-CLINIC') {
+    //     props.onDone(result.data.id);
+    //   }
+    // }
 
     setLoading(false);
   };
   useEffect(() => {
-    // async function fetchData() {
-    //   const results = await Promise.all([getListService()]);
-    //   setDataCreate(results[0]);
-    // }
-    // fetchData();
-  }, []);
+    setRenderTypeExam(form.getFieldValue('type-exam'));
+    console.log('type-exam', form.getFieldValue('type-exam'));
+  }, [form.getFieldValue('type-exam')]);
+
   useEffect(() => {
     async function fetchData() {
       if (props.id) {
@@ -108,9 +150,9 @@ const CreateDoctorForm = (props) => {
   const renderCreateForm = () => {
     return (
       <div>
-        <Row>
+        <Row gutter={[10, 0]}>
           {/* Name */}
-          <Col xs={24}>
+          <Col xs={16}>
             <FormItem
               label="Tên Assignments"
               name="name"
@@ -124,8 +166,35 @@ const CreateDoctorForm = (props) => {
               <Input placeholder="Ví dụ: Bài kiểm tra đầu vào" />
             </FormItem>
           </Col>
+          {/* Status */}
+          <Col xl={8}>
+            <FormItem
+              label="Trạng thái"
+              name="status"
+              rules={[
+                {
+                  required: true,
+                  message: 'Bạn chưa chọn trạng thái',
+                },
+              ]}
+            >
+              <Select
+                placeholder="Chọn trạng thái"
+                options={[
+                  {
+                    value: false,
+                    label: 'Imported',
+                  },
+                  {
+                    value: true,
+                    label: 'Public',
+                  },
+                ]}
+              />
+            </FormItem>
+          </Col>
           {/* title */}
-          <Col xs={24} xl={8} className="padding-right">
+          <Col xl={8}>
             <FormItem
               label="Loại Assignments"
               name="type-assign"
@@ -140,7 +209,8 @@ const CreateDoctorForm = (props) => {
                 placeholder="Chọn loại Assignments"
                 onChange={(e) => {
                   setTypeAssign(e);
-                  form.setFieldValue('type-exam', ['LISTENING', 'READING']);
+                  if (e == 'TESTS') form.setFieldValue('type-exam', ['LISTENING', 'READING']);
+                  else form.setFieldValue('type-exam', []);
                 }}
                 options={[
                   {
@@ -155,7 +225,7 @@ const CreateDoctorForm = (props) => {
               />
             </FormItem>
           </Col>
-          <Col xs={24} xl={8} className="padding-right">
+          <Col xl={8}>
             <FormItem
               label="Loại bài"
               name="type-exam"
@@ -170,6 +240,9 @@ const CreateDoctorForm = (props) => {
                 placeholder="Chọn loại bài"
                 mode="multiple"
                 disabled={typeAssign === 'TESTS' ? true : false}
+                onChange={(e) => {
+                  setRenderTypeExam(e);
+                }}
                 options={[
                   {
                     value: 'LISTENING',
@@ -184,7 +257,7 @@ const CreateDoctorForm = (props) => {
             </FormItem>
           </Col>
           {/* Chọn khóa học */}
-          <Col xs={24} xl={8} className="padding-right">
+          <Col xl={8}>
             <FormItem
               label="Chọn khóa học"
               name="course_location"
@@ -202,67 +275,314 @@ const CreateDoctorForm = (props) => {
               />
             </FormItem>
           </Col>
-          <Divider />
-          {/* Tạo bài nghe */}  
-          <Col xs={24} xl={8}>
-            <FormItem label="Năm kinh nghiệm" name="experience_time">
-              <Input placeholder="Ví dụ: 24 năm" />
-            </FormItem>
-          </Col>
-          {/* service */}
-          <Col xs={24}>
-            <Form.Item label="Dịch vụ" name={'doctor_service'} initialValue={[]}>
-              <Select
-                style={{
-                  width: '100%',
-                }}
-                mode="multiple"
-                showSearch
-                filterOption={fillterOption}
-                placeholder="Chọn Dịch vụ"
-              >
-                {dataCreate &&
-                  dataCreate.data.map((doctor_service) => {
-                    return (
-                      <Option key={doctor_service.id} value={doctor_service.id}>
-                        {doctor_service.name}
-                      </Option>
-                    );
-                  })}
-              </Select>
-            </Form.Item>
-          </Col>
-          {/* Introduce */}
-          <Col xs={24}>
-            <Form.Item
-              name="introduce"
-              label="Giới thiệu chung về bác sĩ"
-              style={{ width: '100%' }}
-            >
-              <Input.TextArea
-                rows={6}
-                placeholder={`Ví dụ: Bác sĩ Thái tốt nghiệp Bs CKII - Răng Hàm Mặt Trường Đại học Y Hà Nội. Với hơn 25 năm kinh nghiệm khám và điều trị các bệnh lý về nha khoa, bác sĩ Thái đã từng đảm nhận các vị trí quan trọng tại nhiều hệ thống hệ thống nha khoa lớn.
+          {renderTypeExam?.includes('LISTENING') && (
+            <>
+              <Divider />
+              {/* Tạo bài nghe */}
+              <div className="task-title">Listening</div>
+              {/* Upload audio */}
+              <Col xl={12}>
+                <FormItem
+                  label="Audio"
+                  name="audio"
+                  valuePropName="fileList"
+                  getValueFromEvent={normFile}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Bạn chưa tải lên audio',
+                    },
+                  ]}
+                >
+                  <Upload
+                    listType="picture"
+                    accept="audio/*"
+                    maxCount={1}
+                    // beforeUpload={beforeUpload}
+                    // onChange={() => {
+                    //   form.setFieldsValue({ coverId: undefined });
+                    // }}
+                    // onPreview={onPreview}
+                    customRequest={async ({ onSuccess, file, onError }) => {
+                      const isMp3OrAac = file.type === 'audio/mpeg' || file.type === 'audio/aac';
+                      if (!isMp3OrAac) {
+                        message.error('You can only upload Mp3/Aac file!');
+                        onError();
+                      }
+                      const isLt10M = file.size / 1024 / 1024 < 10;
+                      if (!isLt10M) {
+                        message.error('Video must smaller than 10MB!');
+                        onError();
+                      }
+                      if (isMp3OrAac && isLt10M) {
+                        // console.log(file)
+                        const base64 = await getNewBase64(file);
+                        onSuccess(base64);
+                      }
+                    }}
+                  >
+                    <Button icon={<UploadOutlined />}>Upload</Button>
+                  </Upload>
+                </FormItem>
+              </Col>
+              {/* Content */}
+              <Col xl={24}>
+                <FormItem
+                  label="Nội dung"
+                  name="listening_content"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Bạn chưa chọn khóa học',
+                    },
+                  ]}
+                >
+                  <SunEditor
+                    getSunEditorInstance={getSunEditorInstance}
+                    setOptions={{
+                      height: 250,
+                      buttonList: [
+                        ['undo', 'redo'],
+                        ['font', 'fontSize', 'formatBlock'],
+                        ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
+                        ['bold', 'underline', 'italic', 'strike'],
+                        ['fontColor', 'hiliteColor'],
+                        ['align', 'list'],
+                      ],
+                    }}
+                  />
+                </FormItem>
+              </Col>
+              <Col span={24} style={{ marginBottom: 15 }} className="question-card">
+                <Form.List name="listening_question" initialValue={[{}]}>
+                  {(fields, { add, remove }) => (
+                    <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                      {fields.map((field) => {
+                        return (
+                          <Card
+                            size="small"
+                            title={
+                              <div className="header-card">
+                                <span>Question {field.name + 1}</span>
+                                <Form.Item
+                                  // label="Tên dịch vụ"
+                                  name={[field.name, 'question_title']}
+                                  rules={[
+                                    {
+                                      required: false,
+                                      message: 'Bạn chưa nhập question',
+                                    },
+                                  ]}
+                                >
+                                  <Input></Input>
+                                </Form.Item>
+                              </div>
+                            }
+                            key={field.key}
+                            extra={
+                              <Popconfirm
+                                title="Bạn có chắc chắn xóa không?"
+                                placement="topRight"
+                                onConfirm={() => {
+                                  remove(field.name);
+                                }}
+                                okText="Ok"
+                                cancelText="Hủy"
+                              >
+                                <CloseOutlined />
+                              </Popconfirm>
+                            }
+                          >
+                            <Form.Item>
+                              <Form.List name={[field.name, 'answer']} initialValue={[{}, {}, {}]}>
+                                {(subFields, subOpt) => (
+                                  <div
+                                    style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}
+                                  >
+                                    {subFields.map((subField) => (
+                                      <Row key={subField.key} className="row-answer">
+                                        <Col span={12} className="padding-right">
+                                          <Form.Item
+                                            name={[subField.name, 'title']}
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message: 'Bạn chưa điền đáp án',
+                                              },
+                                            ]}
+                                          >
+                                            <Input />
+                                          </Form.Item>
+                                        </Col>
+                                        <Col className="check-box">
+                                          <FormItem name={[subField.name, 'correct']}>
+                                            <Checkbox></Checkbox>
+                                          </FormItem>
+                                        </Col>
+                                        <CloseOutlined
+                                          onClick={() => {
+                                            subOpt.remove(subField.name);
+                                          }}
+                                        />
+                                      </Row>
+                                    ))}
+                                    <Button
+                                      className="button-add"
+                                      type="dashed"
+                                      onClick={() => subOpt.add()}
+                                      block
+                                    >
+                                      + Thêm answer
+                                    </Button>
+                                  </div>
+                                )}
+                              </Form.List>
+                            </Form.Item>
+                          </Card>
+                        );
+                      })}
 
-Ngoài ra, bác sĩ Thái còn được mời làm Đại diện cho thương hiệu Mytis Arrow Implant - một thương hiệu nổi tiếng về Implant của Nhật Bản`}
-              />
-            </Form.Item>
-          </Col>
-          {/* Education */}
-          <Col xs={24}>
-            <Form.Item name="education" label="Học vấn" style={{ width: '100%' }}>
-              <Input.TextArea rows={6} />
-            </Form.Item>
-          </Col>
-          {/* experience */}
-          <Col xs={24}>
-            <Form.Item
-              name="work_experience"
-              label="Kinh nghiệm làm việc"
-              style={{ width: '100%' }}
-            >
-              <Input.TextArea rows={6} />
-            </Form.Item>
-          </Col>
+                      <Button type="dashed" onClick={() => add()} block>
+                        + Thêm question
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
+              </Col>
+            </>
+          )}
+
+          {renderTypeExam?.includes('READING') && (
+            <>
+              <Divider />
+              {/* Tạo bài đọc */}
+              <div className="task-title">Reading</div>
+              {/* Content */}
+              <Col xl={24}>
+                <FormItem
+                  label="Nội dung"
+                  name="reading_content"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Bạn chưa chọn khóa học',
+                    },
+                  ]}
+                >
+                  <SunEditor
+                    getSunEditorInstance={getSunEditorInstance}
+                    setOptions={{
+                      height: 250,
+                      buttonList: [
+                        ['undo', 'redo'],
+                        ['font', 'fontSize', 'formatBlock'],
+                        ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
+                        ['bold', 'underline', 'italic', 'strike'],
+                        ['fontColor', 'hiliteColor'],
+                        ['align', 'list'],
+                      ],
+                    }}
+                  />
+                </FormItem>
+              </Col>
+              <Col span={24} style={{ marginBottom: 15 }} className="question-card">
+                <Form.List name="reading_question" initialValue={[{}]}>
+                  {(fields, { add, remove }) => (
+                    <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                      {fields.map((field) => {
+                        return (
+                          <Card
+                            size="small"
+                            title={
+                              <div className="header-card">
+                                <span>Question {field.name + 1}</span>
+                                <Form.Item
+                                  // label="Tên dịch vụ"
+                                  name={[field.name, 'question_title']}
+                                  rules={[
+                                    {
+                                      required: false,
+                                      message: 'Bạn chưa nhập question',
+                                    },
+                                  ]}
+                                >
+                                  <Input></Input>
+                                </Form.Item>
+                              </div>
+                            }
+                            key={field.key}
+                            extra={
+                              <Popconfirm
+                                title="Bạn có chắc chắn xóa không?"
+                                placement="topRight"
+                                onConfirm={() => {
+                                  remove(field.name);
+                                }}
+                                okText="Ok"
+                                cancelText="Hủy"
+                              >
+                                <CloseOutlined />
+                              </Popconfirm>
+                            }
+                          >
+                            <Form.Item>
+                              <Form.List name={[field.name, 'answer']} initialValue={[{}, {}, {}]}>
+                                {(subFields, subOpt) => (
+                                  <div
+                                    style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}
+                                  >
+                                    {subFields.map((subField) => (
+                                      <Row key={subField.key} className="row-answer">
+                                        <Col span={12} className="padding-right">
+                                          <Form.Item
+                                            name={[subField.name, 'title']}
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message: 'Bạn chưa điền đáp án',
+                                              },
+                                            ]}
+                                          >
+                                            <Input />
+                                          </Form.Item>
+                                        </Col>
+                                        <Col className="check-box">
+                                          <FormItem name={[subField.name, 'correct']}>
+                                            <Checkbox></Checkbox>
+                                          </FormItem>
+                                        </Col>
+                                        <CloseOutlined
+                                          onClick={() => {
+                                            subOpt.remove(subField.name);
+                                          }}
+                                        />
+                                      </Row>
+                                    ))}
+                                    <Button
+                                      className="button-add"
+                                      type="dashed"
+                                      onClick={() => subOpt.add()}
+                                      block
+                                    >
+                                      + Thêm answer
+                                    </Button>
+                                  </div>
+                                )}
+                              </Form.List>
+                            </Form.Item>
+                          </Card>
+                        );
+                      })}
+
+                      <Button type="dashed" onClick={() => add()} block>
+                        + Thêm question
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
+              </Col>
+            </>
+          )}
         </Row>
         <FormItem className="wrapper-button-submit">
           <Button

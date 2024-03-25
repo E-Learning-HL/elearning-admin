@@ -641,10 +641,26 @@ const CreateClinicForm = (props) => {
                   accept="image/*"
                   maxCount={1}
                   // beforeUpload={beforeUpload}
-                  onChange={() => {
-                    form.setFieldsValue({ coverId: undefined });
-                  }}
+                  // onChange={() => {
+                  //   form.setFieldsValue({ coverId: undefined });
+                  // }}
                   onPreview={onPreview}
+                  customRequest={async ({ onSuccess, file, onError }) => {
+                    const isJpegOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+                    if (!isJpegOrPng) {
+                      message.error('You can only upload Jpeg/Png file!');
+                      onError();
+                    }
+                    const isLt3M = file.size / 1024 / 1024 < 3;
+                    if (!isLt3M) {
+                      message.error('Video must smaller than 3MB!');
+                      onError();
+                    }
+                    if (isJpegOrPng && isLt3M) {
+                      const base64 = await getNewBase64(file);
+                      onSuccess(base64);
+                    }
+                  }}
                 >
                   <Button icon={<UploadOutlined />}>Upload</Button>
                 </Upload>
@@ -992,34 +1008,34 @@ const CreateClinicForm = (props) => {
                           }
                         >
                           {/* <Form.Item
-      label="Dịch vụ"
-      name={[field.name, 'category_service_id']}
-      rules={[
-        {
-          required: false,
-          message: 'Bạn chưa chọn Dịch vụ',
-        },
-      ]}
-    >
-      <Select
-        style={{
-          width: '91%',
-        }}
-        showSearch
-        filterOption={fillterOption}
-        placeholder="Chọn Dịch vụ"
-      >
-        {dataCreate &&
-          dataCreate.listService &&
-          dataCreate.listService.data.map((service) => {
-            return (
-              <Option key={service.id} value={service.id}>
-                {service.name}
-              </Option>
-            );
-          })}
-      </Select>
-    </Form.Item> */}
+                            label="Dịch vụ"
+                            name={[field.name, 'category_service_id']}
+                            rules={[
+                              {
+                                required: false,
+                                message: 'Bạn chưa chọn Dịch vụ',
+                              },
+                            ]}
+                          >
+                            <Select
+                              style={{
+                                width: '91%',
+                              }}
+                              showSearch
+                              filterOption={fillterOption}
+                              placeholder="Chọn Dịch vụ"
+                            >
+                              {dataCreate &&
+                                dataCreate.listService &&
+                                dataCreate.listService.data.map((service) => {
+                                  return (
+                                    <Option key={service.id} value={service.id}>
+                                      {service.name}
+                                    </Option>
+                                  );
+                                })}
+                            </Select>
+                          </Form.Item> */}
 
                           <Form.Item>
                             <Form.List name={[field.name, 'lesson']} initialValue={[{}]}>
@@ -1054,28 +1070,6 @@ const CreateClinicForm = (props) => {
                                             listType="picture"
                                             accept="video/*"
                                             maxCount={1}
-                                            // onChange={handleChangeBanner}
-                                            onChange={(info) => {
-                                              console.log('infoo', info);
-                                              // if (info.file.status !== 'uploading') {
-                                              //   console.log(info.file, info.fileList);
-                                              // }
-                                              // if (info.file.status === 'done') {
-                                              //   message.success(`${info.file.name} file uploaded successfully`);
-                                              // } else if (info.file.status === 'error') {
-                                              //   message.error(`${info.file.name} file upload failed.`);
-                                              // }
-                                            }}
-                                            // progress={{
-                                            //   strokeColor: {
-                                            //     '0%': '#108ee9',
-                                            //     '100%': '#87d068',
-                                            //   },
-                                            //   strokeWidth: 3,
-                                            //   format: (percent) =>
-                                            //     percent && `${parseFloat(percent.toFixed(2))}%`,
-                                            // }}
-                                            // onPreview={onPreview}
                                             customRequest={async ({ onSuccess, file, onError }) => {
                                               const isMp4OrMov =
                                                 file.type === 'video/mp4' ||

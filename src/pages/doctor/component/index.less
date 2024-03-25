@@ -14,4 +14,45 @@
   .padding-right {
     padding-right: 10px;
   }
+
+  .task-title{
+    font-weight: bold;
+    width: 100%;
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding-left: 5px;
+  }
+
+  .question-card{
+    .header-card {
+      display: flex;
+      align-items: center;
+      .ant-form-item {
+        width: 100%;
+        margin: 10px
+      }
+    }
+    .ant-form-item{
+      margin-bottom: 0;
+    }
+
+    .button-add{
+      max-width: 250px !important;
+    }
+
+    .row-answer{
+      .check-box{
+        margin-right: 20px;
+        .ant-checkbox-inner{
+          width: 30px !important;
+          height: 30px !important;
+          border-radius: 6px !important;
+        }
+        .ant-checkbox-inner::after{
+          transform: rotate(45deg) scale(1.6) translate(-5%,-45%);
+        }
+      }
+    }
+
+  }
 }

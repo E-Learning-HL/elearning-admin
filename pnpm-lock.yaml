@@ -71,6 +71,12 @@ dependencies:
   react-quill:
     specifier: ^2.0.0
     version: 2.0.0(react-dom@18.2.0)(react@18.2.0)
+  suneditor:
+    specifier: ^2.45.1
+    version: 2.45.1
+  suneditor-react:
+    specifier: ^3.6.1
+    version: 3.6.1(react-dom@18.2.0)(react@18.2.0)(suneditor@2.45.1)
 
 devDependencies:
   '@ant-design/pro-cli':
@@ -16247,6 +16253,22 @@ packages:
     dependencies:
       postcss: 7.0.39
     dev: true
+
+  /suneditor-react@3.6.1(react-dom@18.2.0)(react@18.2.0)(suneditor@2.45.1):
+    resolution: {integrity: sha512-12f9KLnEB6pAdyHJINTzRBg3UOWVZZ+jVYSEtwdBTDYQW4amUZr0xOnpikbBAlxb9rcTYV5RHAsad3gnNhLsuA==}
+    peerDependencies:
+      react: '>= 16.8.0'
+      react-dom: '>= 16.8.0'
+      suneditor: ^2.44.10
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      suneditor: 2.45.1
+    dev: false
+
+  /suneditor@2.45.1:
+    resolution: {integrity: sha512-fLxc0nLwd77vaPuf78D+VAFNAgX9hLps6h96JA/LUCpqt4LeYnEaIE1RfJojX+BhSA+krl5qZ8pdgqcoo3dN3g==}
+    dev: false
 
   /superjson@1.13.3:
     resolution: {integrity: sha512-mJiVjfd2vokfDxsQPOwJ/PtanO87LhpYY88ubI5dUB1Ab58Txbyje3+jpm+/83R/fevaq/107NNhtYBLuoTrFg==}
