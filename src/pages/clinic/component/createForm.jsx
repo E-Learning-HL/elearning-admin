@@ -1166,7 +1166,7 @@ const CreateClinicForm = (props) => {
   const onFinish = async () => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
-    console.log('fieldsValue', fieldsValue);
+    const result = await createCourse(fieldsValue)
     // const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
     // const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
 

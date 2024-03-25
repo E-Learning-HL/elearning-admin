@@ -4,6 +4,28 @@ import { DEV_API_HOST } from '@/const/const';
 import { request } from '@umijs/max';
 import { message } from 'antd';
 
+
+export async function createCourse(body: any) {
+  try {
+
+    let res = await request(`${DEV_API_HOST}/api/courses/create-courses`, {
+      method: 'POST',
+      // headers: {
+      //   'Content-Type': 'application/json',
+      //   Authorization: `Bearer ${getAuthority()}`,
+      // },
+      data: { ...body },
+    });
+    if (res?.status === 200) {
+      message.success('Thành công');
+    }
+    return res;
+  } catch (error) {
+    return false;
+  }
+}
+
+
 export async function getListClinic(
   params: {
     current?: number;
