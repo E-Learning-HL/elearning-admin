@@ -7,7 +7,7 @@ export default function ImageCommon({ data, className }) {
   const [image, setImage] = useState(data);
   return (
     <Image
-      src={image ? `${PREFIX_IMAGE_URL}${image.key}` : defaultImage}
+      src={image ? image : defaultImage}
       className={className}
       onError={() => {
         setImage(null);

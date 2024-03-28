@@ -29,6 +29,7 @@ import {
   Image,
   Popconfirm,
   Menu,
+  InputNumber,
   Collapse,
 } from 'antd';
 import moment from 'moment';
@@ -47,7 +48,7 @@ import {
   getListSpecialization,
   getListTag,
   getListImage,
-  updateClinic,
+  createCourse,
 } from '../service';
 
 import CreateImportForm from './importForm';
@@ -587,10 +588,45 @@ const CreateClinicForm = (props) => {
                 />
               </FormItem>
             </Col>
-            <Col xs={24} xl={12} className="padding-right">
-              <Form.Item label="Giá" name="price">
-                <Input type="number" placeholder="Ví dụ: 800,000" />
+            <Col xs={24} xl={6} className="padding-right wp-price">
+              <Form.Item
+                label="Giá"
+                name="price"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa chọn trạng thái',
+                  },
+                ]}
+              >
+                <InputNumber type="number" placeholder="Ví dụ: 800,000" />
               </Form.Item>
+            </Col>
+            <Col xs={24} xl={6} className="padding-right">
+              <FormItem
+                label="Trạng thái"
+                name="status"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa chọn trạng thái',
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Chọn trạng thái"
+                  options={[
+                    {
+                      value: false,
+                      label: 'Imported',
+                    },
+                    {
+                      value: true,
+                      label: 'Public',
+                    },
+                  ]}
+                />
+              </FormItem>
             </Col>
             {/* Slug */}
             {/* <Col xs={12}>
@@ -635,6 +671,12 @@ const CreateClinicForm = (props) => {
                 name="cover"
                 valuePropName="fileList"
                 getValueFromEvent={normFile}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa chọn trạng thái',
+                  },
+                ]}
               >
                 <Upload
                   listType="picture"
@@ -888,6 +930,12 @@ const CreateClinicForm = (props) => {
                 label="Giới thiệu"
                 style={{ width: '100%' }}
                 initialValue={''}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa chọn trạng thái',
+                  },
+                ]}
               >
                 {/* <Input.TextArea rows={6} /> */}
                 <ReactQuill
@@ -1038,7 +1086,7 @@ const CreateClinicForm = (props) => {
                           </Form.Item> */}
 
                           <Form.Item>
-                            <Form.List name={[field.name, 'lesson']} initialValue={[{}]}>
+                            <Form.List name={[field.name, 'lessons']} initialValue={[{}]}>
                               {(subFields, subOpt) => (
                                 <div
                                   style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}
@@ -1167,6 +1215,7 @@ const CreateClinicForm = (props) => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
     const result = await createCourse(fieldsValue)
+    console.log('fieldsValue', fieldsValue);
     // const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
     // const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
 

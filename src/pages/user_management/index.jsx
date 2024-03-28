@@ -96,8 +96,8 @@ const CategoryService = () => {
       },
     },
     {
-      title: 'Role',
-      dataIndex: 'role_id',
+      title: 'Email',
+      dataIndex: 'email',
       // hideInSearch: true,
       render: (dom, entity) => {
         return (
@@ -111,51 +111,103 @@ const CategoryService = () => {
                 // }}
                 className="category-service-name"
               >
-                {entity?.role?.name}
+                {dom}
               </a>
             </div>
           </div>
         );
       },
-      renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
-        const debounceOnChangeInput = _.debounce((event) => {
-          form.submit();
-          setDebouncing(false);
-        }, 900);
+      // renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
+      //   const debounceOnChangeInput = _.debounce((event) => {
+      //     form.submit();
+      //     setDebouncing(false);
+      //   }, 200);
 
-        return (
-          <Select
-            className="select-form-contact"
-            style={{ width: '100%' }}
-            // filterOption={filterOption}
-            placeholder="Chọn role"
-            allowClear
-            onChange={(event) => {
-              form.setFieldsValue({ role_id: event });
-              setLoadingTable(true);
-              if (!debouncing) {
-                setDebouncing(true);
-                if (event !== '') {
-                  debounceOnChangeInput(event);
-                } else {
-                  form.submit();
-                  setDebouncing(false);
-                }
-              }
-            }}
-          >
-            {listRole?.data &&
-              listRole?.data?.map((item) => {
-                return (
-                  <Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Option>
-                );
-              })}
-          </Select>
-        );
-      },
+      //   return (
+      //     <Input
+      //       placeholder="Nhập email"
+      //       onChange={(event) => {
+      //         event.persist();
+      //         form.setFieldsValue({ name: event.target.value });
+      //         setLoadingTable(true);
+
+      //         if (!debouncing) {
+      //           setDebouncing(true);
+
+      //           if (event.target.value !== '') {
+      //             debounceOnChangeInput(event);
+      //           } else {
+      //             form.submit();
+      //             setDebouncing(false);
+      //           }
+      //         }
+      //       }}
+      //       allowClear
+      //     />
+      //   );
+      // },
     },
+    // {
+    //   title: 'Role',
+    //   dataIndex: 'role_id',
+    //   // hideInSearch: true,
+    //   render: (dom, entity) => {
+    //     return (
+    //       <div className="wrapper-first-column">
+    //         <div className="wrapper-info">
+    //           <a
+    //             // onClick={() => {
+    //             //   history.push(`/category-service?id=${entity?.id}`);
+    //             //   setCurrentRow(entity);
+    //             //   setShowDetail(true);
+    //             // }}
+    //             className="category-service-name"
+    //           >
+    //             {entity?.role?.name}
+    //           </a>
+    //         </div>
+    //       </div>
+    //     );
+    //   },
+    //   renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
+    //     const debounceOnChangeInput = _.debounce((event) => {
+    //       form.submit();
+    //       setDebouncing(false);
+    //     }, 900);
+
+    //     return (
+    //       <Select
+    //         className="select-form-contact"
+    //         style={{ width: '100%' }}
+    //         // filterOption={filterOption}
+    //         placeholder="Chọn role"
+    //         allowClear
+    //         onChange={(event) => {
+    //           form.setFieldsValue({ role_id: event });
+    //           setLoadingTable(true);
+    //           if (!debouncing) {
+    //             setDebouncing(true);
+    //             if (event !== '') {
+    //               debounceOnChangeInput(event);
+    //             } else {
+    //               form.submit();
+    //               setDebouncing(false);
+    //             }
+    //           }
+    //         }}
+    //       >
+    //         {listRole?.data &&
+    //           listRole?.data?.map((item) => {
+    //             return (
+    //               <Option key={item.id} value={item.id}>
+    //                 {item.name}
+    //               </Option>
+    //             );
+    //           })}
+    //       </Select>
+    //     );
+    //   },
+    // },
     {
       title: 'Điều khiển',
       dataIndex: 'option',

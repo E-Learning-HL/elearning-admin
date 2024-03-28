@@ -1,6 +1,7 @@
 import { getAuthority } from '@/common/authority';
 import { remove } from '@/common/request';
 import { request } from '@umijs/max';
+import { DEV_API_HOST } from '@/const/const';
 import { message } from 'antd';
 
 
@@ -9,11 +10,11 @@ export async function getListUser(
     current?: number;
     pageSize?: number;
     name?: string;
-    role_id?: number;
+    // role_id?: number;
   },
   options?: { [key: string]: any }
 ) {
-  const result = await request(`${API_ENDPOINT}/admin/user`, {
+  const result = await request(`${DEV_API_HOST}/api/users/list`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +24,7 @@ export async function getListUser(
       page: params?.current,
       limit: params?.pageSize,
       name: params?.name,
-      role_id: params?.role_id
+      // role_id: params?.role_id
     },
     ...(options || {}),
   });

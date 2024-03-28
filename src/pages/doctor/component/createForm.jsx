@@ -61,22 +61,35 @@ const CreateDoctorForm = (props) => {
   // Example data for course
   const courseOptions = [
     {
-      value: 'zhejiang',
-      label: 'Zhejiang',
-    },
-    {
-      value: 'jiangsu',
-      label: 'Jiangsu',
+      value: 'ielts 4.5',
+      label: 'ielts 4.5',
       children: [
         {
-          value: 'nanjing',
-          label: 'Nanjing',
-          children: [
-            {
-              value: 'zhonghuamen',
-              label: 'Zhong Hua Men',
-            },
-          ],
+          value: 'section 1',
+          label: 'section 1',
+          
+        },
+      ],
+    },
+    {
+      value: 'ielts 6.5',
+      label: 'ielts 6.5',
+      children: [
+        {
+          value: 'section 1',
+          label: 'section 1',
+          
+        },
+      ],
+    },
+    {
+      value: 'ielts 5.5',
+      label: 'ielts 5.5',
+      children: [
+        {
+          value: 'section 1',
+          label: 'section 1',
+          
         },
       ],
     },

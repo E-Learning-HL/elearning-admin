@@ -25,6 +25,35 @@ export async function createCourse(body: any) {
   }
 }
 
+export async function getListCourse(
+  params: {
+    current?: number;
+    pageSize?: number;
+    name?: string;
+  },
+  options?: { [key: string]: any },
+) {
+  let newParams = {
+    page: params.current,
+    limit: params.pageSize,
+    search: params.name,
+  };
+  const result = await request(`${DEV_API_HOST}/api/courses/get-list`, {
+    method: 'GET',
+    params: {
+      ...newParams,
+    },
+    ...(options || {}),
+  });
+  return {
+    data: result.data,
+    success: true,
+    total: result.total,
+  };
+}
+
+
+
 
 export async function getListClinic(
   params: {

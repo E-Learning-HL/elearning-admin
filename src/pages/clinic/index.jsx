@@ -8,7 +8,7 @@ import iconMark from '../../assets/image/icon-mark.svg';
 import iconStar2 from '../../assets/image/icon-star-2.svg';
 import iconStar from '../../assets/image/icon-star.svg';
 import './index.less';
-import { getClinic, getListClinic, removeClinic } from './service';
+import { getClinic, getListCourse, removeClinic } from './service';
 
 import iconCheck from '../../assets/image/icon-check.svg';
 
@@ -46,20 +46,26 @@ const Clinic = () => {
       return false;
     }
   };
+
+  const status = {
+    true: "Public",
+    false: "Imported"
+  };
+
   const columns = [
     {
-      title: 'Tên',
-      dataIndex: 'name',
+      title: 'Name',
+      dataIndex: 'nameCourse',
       width: 500,
       render: (dom, entity) => {
-        const logo = entity?.image?.find((item) => item.image_type === IMAGE_TYPE.avatar);
+        // const logo = entity?.image?.find((item) => item.image_type === IMAGE_TYPE.avatar);
         return (
           <div className="wrapper-first-column">
             {/* <img
               className="logo-clinic"
               src={cover?.key ? `${PREFIX_IMAGE_URL}${cover.key}` : defaultImage}
             /> */}
-            <ImageCommon data={logo} className="logo-clinic" />
+            <ImageCommon data={entity?.file[0]?.url} className="logo-clinic" />
             <div className="wrapper-info">
               <a
                 onClick={() => {
@@ -73,7 +79,7 @@ const Clinic = () => {
               >
                 {dom}
               </a>
-              <div className="description">{entity.introduce}</div>
+              {/* <div className="description">{entity.introduce}</div> */}
             </div>
           </div>
         );
@@ -107,6 +113,56 @@ const Clinic = () => {
           />
         );
       },
+    },
+    {
+      title: 'Status',
+      dataIndex: 'isActive',
+      width: 500,
+      render: (dom, entity) => {
+        // const logo = entity?.image?.find((item) => item.image_type === IMAGE_TYPE.avatar);
+        return (
+          <div className="wrapper-first-column">
+            {/* <img
+              className="logo-clinic"
+              src={cover?.key ? `${PREFIX_IMAGE_URL}${cover.key}` : defaultImage}
+            /> */}
+            {/* <ImageCommon data={entity?.file[0]?.url} className="logo-clinic" /> */}
+            <div className="wrapper-info">
+                {status[dom]}
+              {/* <div className="description">{entity.introduce}</div> */}
+            </div>
+          </div>
+        );
+      },
+      // renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
+      //   const debounceOnChangeInput = _.debounce((event) => {
+      //     form.submit();
+      //     setDebouncing(false);
+      //   }, 900);
+
+      //   return (
+      //     <Input
+      //       placeholder="Nhập tên khóa học"
+      //       onChange={(event) => {
+      //         event.persist();
+      //         form.setFieldsValue({ name: event.target.value });
+      //         setLoadingTable(true);
+
+      //         if (!debouncing) {
+      //           setDebouncing(true);
+
+      //           if (event.target.value !== '') {
+      //             debounceOnChangeInput(event);
+      //           } else {
+      //             form.submit();
+      //             setDebouncing(false);
+      //           }
+      //         }
+      //       }}
+      //       allowClear
+      //     />
+      //   );
+      // },
     },
     // {
     //   title: 'Thời gian làm việc',
@@ -420,7 +476,7 @@ const Clinic = () => {
           actionRef={actionRef}
           rowKey="id"
           request={async (params, sorter, filter) => {
-            const listClinic = await getListClinic({ ...params, sorter, filter });
+            const listClinic = await getListCourse({ ...params, sorter, filter });
             setLoadingTable(false);
             return listClinic;
           }}

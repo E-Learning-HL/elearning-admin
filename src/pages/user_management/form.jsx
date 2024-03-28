@@ -57,22 +57,24 @@ const CreateCategoryServiceForm = (props) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    async function fetch() {
-      setLoadingPage(true)
-      const result = await getListClinic();
-      setListClinic(result);
-      const clinics = props?.clinics?.map((item) => item.id)
-      form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
-      form.setFieldsValue({ role_id: props.type === 'EDIT' ? props.role_id : null });
-      form.setFieldsValue({ email: props.type === 'EDIT' ? props.email : '' });
-      form.setFieldsValue({clinic_id: props.type === 'EDIT'? clinics : null})
-      if(props?.role_name === 'CLINIC')
-        setIsClinic(true)
-    }
-    fetch();
-    setLoadingPage(false);
-  }, []);
+  // Check lại phần này 
+
+  // useEffect(() => {
+  //   async function fetch() {
+  //     setLoadingPage(true)
+  //     const result = await getListClinic();
+  //     setListClinic(result);
+  //     const clinics = props?.clinics?.map((item) => item.id)
+  //     form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
+  //     form.setFieldsValue({ role_id: props.type === 'EDIT' ? props.role_id : null });
+  //     form.setFieldsValue({ email: props.type === 'EDIT' ? props.email : '' });
+  //     form.setFieldsValue({clinic_id: props.type === 'EDIT'? clinics : null})
+  //     if(props?.role_name === 'CLINIC')
+  //       setIsClinic(true)
+  //   }
+  //   fetch();
+  //   setLoadingPage(false);
+  // }, []);
 
   const renderCreateForm = (data) => {
     return (
