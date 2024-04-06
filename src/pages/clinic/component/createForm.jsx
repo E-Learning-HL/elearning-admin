@@ -664,8 +664,57 @@ const CreateClinicForm = (props) => {
               </Upload>
             </FormItem>
           </Col> */}
+
+            {/* course level */}
+            <Col xs={24} xl={6} className="padding-right">
+              <FormItem
+                label="Level"
+                name="course_level"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa chọn level',
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Chọn trình độ"
+                  options={[
+                    {
+                      value: 0,
+                      label: 'Junior',
+                    },
+                    {
+                      value: 2,
+                      label: '0 - 3.0',
+                    },
+                    {
+                      value: 4,
+                      label: '3.0 - 4.5',
+                    },
+                    {
+                      value: 5,
+                      label: '4.5 - 5.5',
+                    },
+                    {
+                      value: 6,
+                      label: '5.5 - 6.5',
+                    },
+                    {
+                      value: 7,
+                      label: '6.5 - 7.5',
+                    },
+                    {
+                      value: 8,
+                      label: '7.5+',
+                    },
+                  ]}
+                />
+              </FormItem>
+            </Col>
+
             {/* Cover */}
-            <Col xs={24} xl={12}>
+            <Col xs={24} xl={6}>
               <FormItem
                 label="Ảnh Bìa"
                 name="cover"
@@ -708,6 +757,7 @@ const CreateClinicForm = (props) => {
                 </Upload>
               </FormItem>
             </Col>
+
             {/* Introduce */}
             {/* <Col xs={24} xl={24}>
             <FormItem
@@ -965,6 +1015,68 @@ const CreateClinicForm = (props) => {
                 />
               </Form.Item>
             </Col>
+
+            <Col xl={12} className="padding-right">
+              <Form.Item
+                name="listening"
+                label="Listening"
+                initialValue={''}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa nhập trường này',
+                  },
+                ]}
+              >
+                <Input.TextArea rows={2} />
+              </Form.Item>
+            </Col>
+            <Col xl={12}>
+              <Form.Item
+                name="speaking"
+                label="Speaking"
+                initialValue={''}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa nhập trường này',
+                  },
+                ]}
+              >
+                <Input.TextArea rows={2} />
+              </Form.Item>
+            </Col>
+            <Col xl={12} className="padding-right">
+              <Form.Item
+                name="reading"
+                label="Reading"
+                initialValue={''}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa nhập trường này',
+                  },
+                ]}
+              >
+                <Input.TextArea rows={2} />
+              </Form.Item>
+            </Col>
+            <Col xl={12}>
+              <Form.Item
+                name="writing"
+                label="Writing"
+                initialValue={''}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Bạn chưa nhập trường này',
+                  },
+                ]}
+              >
+                <Input.TextArea rows={2} />
+              </Form.Item>
+            </Col>
+
             {/* Specialization */}
             {/* <Col xs={24}>
             <Form.Item label="Chuyên khoa" name={'specialization'} initialValue={[]}>
@@ -1214,7 +1326,7 @@ const CreateClinicForm = (props) => {
   const onFinish = async () => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
-    const result = await createCourse(fieldsValue)
+    const result = await createCourse(fieldsValue);
     console.log('fieldsValue', fieldsValue);
     // const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
     // const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
