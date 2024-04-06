@@ -8,6 +8,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback, useState } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
+import { DEV_API_HOST } from '@/const/const';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -145,11 +146,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
   const onSubmit = async () => {
     const formValue = await formChangePassword.validateFields();
     const body = {
-      oldpassword: formValue.oldpass,
-      newpassword: formValue.newpass,
+      oldPassword: formValue.oldpass,
+      newPassword: formValue.newpass,
     };
-    await fetch(`${API_ENDPOINT}/api/user/change-password`, {
-      method: 'POST',
+    await fetch(`${DEV_API_HOST}/api/users/change-password`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthority()}`,
@@ -164,7 +165,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
           openNotificationWithIcon('success', res.message);
           setIsModalOpen(false);
           formChangePassword.resetFields();
-        } else if (res.message.includes('incorrect')) {
+        } else if (res.message.includes('Invalid')) {
           openNotificationWithIcon('error', res.message);
         } else {
           openNotificationWithIcon('error', res.message);
@@ -211,7 +212,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
               { required: true, message: '' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (value.length > 5) {
+                  if (value.length > 7) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('Mật khẩu phải chứa ít nhất 6 kí tự!'));

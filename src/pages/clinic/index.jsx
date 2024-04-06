@@ -95,7 +95,7 @@ const Clinic = () => {
             placeholder="Nhập tên khóa học"
             onChange={(event) => {
               event.persist();
-              form.setFieldsValue({ name: event.target.value });
+              form.setFieldsValue({ nameCourse: event.target.value });
               setLoadingTable(true);
 
               if (!debouncing) {

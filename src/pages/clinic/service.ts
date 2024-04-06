@@ -29,14 +29,14 @@ export async function getListCourse(
   params: {
     current?: number;
     pageSize?: number;
-    name?: string;
+    nameCourse?: string;
   },
   options?: { [key: string]: any },
 ) {
   let newParams = {
     page: params.current,
     limit: params.pageSize,
-    search: params.name,
+    search: params.nameCourse,
   };
   const result = await request(`${DEV_API_HOST}/api/courses/get-list`, {
     method: 'GET',

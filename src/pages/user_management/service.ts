@@ -23,7 +23,7 @@ export async function getListUser(
     params: {
       page: params?.current,
       limit: params?.pageSize,
-      name: params?.name,
+      search: params?.name,
       // role_id: params?.role_id
     },
     ...(options || {}),
