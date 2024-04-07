@@ -49,6 +49,8 @@ import {
   getListTag,
   getListImage,
   createCourse,
+  getDataCourse,
+  updateCourse
 } from '../service';
 
 import CreateImportForm from './importForm';
@@ -91,6 +93,7 @@ const CreateClinicForm = (props) => {
   const [idDotorCreate, setIdDotorCreate] = useState(null);
   const [dataServiceCopilot, setDataServiceCopilot] = useState([]);
   const [website, setWebsite] = useState(null);
+  const [dataFormCourse, setDataFormCourse] = useState(null);
 
   const fillterOption = (input, option) => {
     if (option.props.value) {
@@ -127,302 +130,302 @@ const CreateClinicForm = (props) => {
   // }, []);
 
   //handle import csv
-  useEffect(() => {
-    // specialization
-    if (dataServiceCopilot.specialization !== undefined) {
-      try {
-        const specialization_clinic = [];
-        dataCreate.listSpecialization.data.map((item) =>
-          dataServiceCopilot.specialization.filter((subItem) => {
-            if (subItem.name === item.name) {
-              specialization_clinic.push(item.id);
-            }
-            return specialization_clinic;
-          }),
-        );
-        if (specialization_clinic.length > 0) {
-          form.setFieldValue('specialization', specialization_clinic);
-        }
-        form.setFields([{ name: 'errors', errors: [] }]);
-      } catch (e) {
-        form.setFields([{ name: 'specialization', errors: ['Data import error'] }]);
-      }
-    }
+  // useEffect(() => {
+  //   // specialization
+  //   if (dataServiceCopilot.specialization !== undefined) {
+  //     try {
+  //       const specialization_clinic = [];
+  //       dataCreate.listSpecialization.data.map((item) =>
+  //         dataServiceCopilot.specialization.filter((subItem) => {
+  //           if (subItem.name === item.name) {
+  //             specialization_clinic.push(item.id);
+  //           }
+  //           return specialization_clinic;
+  //         }),
+  //       );
+  //       if (specialization_clinic.length > 0) {
+  //         form.setFieldValue('specialization', specialization_clinic);
+  //       }
+  //       form.setFields([{ name: 'errors', errors: [] }]);
+  //     } catch (e) {
+  //       form.setFields([{ name: 'specialization', errors: ['Data import error'] }]);
+  //     }
+  //   }
 
-    // phone
-    if (dataServiceCopilot.phone !== undefined) {
-      try {
-        const dataPhone = dataServiceCopilot.phone.map((item) => {
-          return { phone_number: item.phone_number };
-        });
-        if (dataPhone.length > 0) {
-          form.setFieldValue('phone', dataPhone);
-        }
-        form.setFields([{ name: 'errors', errors: [] }]);
-      } catch (e) {
-        form.setFields([{ name: 'phone', errors: ['Data import error'] }]);
-      }
-    }
+  //   // phone
+  //   if (dataServiceCopilot.phone !== undefined) {
+  //     try {
+  //       const dataPhone = dataServiceCopilot.phone.map((item) => {
+  //         return { phone_number: item.phone_number };
+  //       });
+  //       if (dataPhone.length > 0) {
+  //         form.setFieldValue('phone', dataPhone);
+  //       }
+  //       form.setFields([{ name: 'errors', errors: [] }]);
+  //     } catch (e) {
+  //       form.setFields([{ name: 'phone', errors: ['Data import error'] }]);
+  //     }
+  //   }
 
-    // services
-    if (dataServiceCopilot.category_services !== undefined) {
-      try {
-        const dataCategoryService = [];
-        console.log('category_services', dataServiceCopilot.category_services);
-        dataCreate.listService.data.map((item) =>
-          dataServiceCopilot.category_services.filter((subItem) => {
-            const dataService = [];
-            if (subItem.name === item.name) {
-              subItem.service.map((element) =>
-                dataService.push({
-                  name: element.name,
-                  amount: element.amount,
-                  unit: element.unit,
-                  guarantee: element.guarantee,
-                }),
-              );
-              dataCategoryService.push({
-                category_service_id: item.id,
-                service: dataService,
-              });
-            }
-            return dataCategoryService;
-          }),
-        );
-        console.log('dataCategoryService.length', dataCategoryService.length);
-        if (dataCategoryService.length > 0) {
-          form.setFieldValue('category_service_clinic', dataCategoryService);
-        }
-        form.setFields([{ name: 'errors', errors: [] }]);
-      } catch (e) {
-        form.setFields([{ name: 'category_service_clinic', errors: ['Data import error'] }]);
-      }
-    }
+  //   // services
+  //   if (dataServiceCopilot.category_services !== undefined) {
+  //     try {
+  //       const dataCategoryService = [];
+  //       console.log('category_services', dataServiceCopilot.category_services);
+  //       dataCreate.listService.data.map((item) =>
+  //         dataServiceCopilot.category_services.filter((subItem) => {
+  //           const dataService = [];
+  //           if (subItem.name === item.name) {
+  //             subItem.service.map((element) =>
+  //               dataService.push({
+  //                 name: element.name,
+  //                 amount: element.amount,
+  //                 unit: element.unit,
+  //                 guarantee: element.guarantee,
+  //               }),
+  //             );
+  //             dataCategoryService.push({
+  //               category_service_id: item.id,
+  //               service: dataService,
+  //             });
+  //           }
+  //           return dataCategoryService;
+  //         }),
+  //       );
+  //       console.log('dataCategoryService.length', dataCategoryService.length);
+  //       if (dataCategoryService.length > 0) {
+  //         form.setFieldValue('category_service_clinic', dataCategoryService);
+  //       }
+  //       form.setFields([{ name: 'errors', errors: [] }]);
+  //     } catch (e) {
+  //       form.setFields([{ name: 'category_service_clinic', errors: ['Data import error'] }]);
+  //     }
+  //   }
 
-    // list_address
-    if (dataServiceCopilot.address !== undefined && dataServiceCopilot.address[0]) {
-      try {
-        const newDistrits = [];
-        const dataAddress = [];
-        const address_copilot = dataServiceCopilot.address[0];
+  //   // list_address
+  //   if (dataServiceCopilot.address !== undefined && dataServiceCopilot.address[0]) {
+  //     try {
+  //       const newDistrits = [];
+  //       const dataAddress = [];
+  //       const address_copilot = dataServiceCopilot.address[0];
 
-        dataCreate.listProvine.data.map(async (item) => {
-          if (item.name.includes(address_copilot.province)) {
-            const list_district = await getListDistrict(item.id);
-            const district = list_district.data.find((district) =>
-              district.name.includes(address_copilot.district),
-            );
-            newDistrits.push(list_district.data);
-            setDistricts(newDistrits);
-            dataAddress.push({
-              province: item?.id,
-              district: district?.id,
-              name: address_copilot?.detail_address,
-            });
-            console.log('dataAddress', dataAddress);
-            form.setFieldValue('list_address', dataAddress);
-            form.setFields([{ name: 'errors', errors: [] }]);
-          }
-        });
-      } catch (e) {
-        form.setFields([{ name: 'list_address', errors: ['Data import error'] }]);
-      }
-    }
-    // [TODO] workday
-  }, [dataServiceCopilot]);
+  //       dataCreate.listProvine.data.map(async (item) => {
+  //         if (item.name.includes(address_copilot.province)) {
+  //           const list_district = await getListDistrict(item.id);
+  //           const district = list_district.data.find((district) =>
+  //             district.name.includes(address_copilot.district),
+  //           );
+  //           newDistrits.push(list_district.data);
+  //           setDistricts(newDistrits);
+  //           dataAddress.push({
+  //             province: item?.id,
+  //             district: district?.id,
+  //             name: address_copilot?.detail_address,
+  //           });
+  //           console.log('dataAddress', dataAddress);
+  //           form.setFieldValue('list_address', dataAddress);
+  //           form.setFields([{ name: 'errors', errors: [] }]);
+  //         }
+  //       });
+  //     } catch (e) {
+  //       form.setFields([{ name: 'list_address', errors: ['Data import error'] }]);
+  //     }
+  //   }
+  //   // [TODO] workday
+  // }, [dataServiceCopilot]);
 
   //handle after create doctor
-  useEffect(() => {
-    async function fetchData() {
-      if (idDotorCreate) {
-        const listDoctor = await getListDoctor(props.id);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     if (idDotorCreate) {
+  //       const listDoctor = await getListDoctor(props.id);
 
-        // form.setFieldValue('doctor', !work);
-        // setDataCreate({
-        //   ...dataCreate,
-        //   listDoctor,
-        // });
+  //       // form.setFieldValue('doctor', !work);
+  //       // setDataCreate({
+  //       //   ...dataCreate,
+  //       //   listDoctor,
+  //       // });
 
-        setDataCreateDoctor(listDoctor.data.data);
+  //       setDataCreateDoctor(listDoctor.data.data);
 
-        let doctor = form.getFieldValue('doctor');
-        if (doctor !== undefined) {
-          doctor.push(idDotorCreate);
-          form.setFieldValue('doctor', doctor);
-        } else {
-          form.setFieldValue('doctor', [idDotorCreate]);
-        }
-        form.validateFields(['doctor']);
-      }
-    }
-    fetchData();
-  }, [idDotorCreate]);
+  //       let doctor = form.getFieldValue('doctor');
+  //       if (doctor !== undefined) {
+  //         doctor.push(idDotorCreate);
+  //         form.setFieldValue('doctor', doctor);
+  //       } else {
+  //         form.setFieldValue('doctor', [idDotorCreate]);
+  //       }
+  //       form.validateFields(['doctor']);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [idDotorCreate]);
 
   //handle in edit clinic
-  useEffect(() => {
-    async function fetchData() {
-      if (props.id) {
-        setLoadingPage(true);
-        const dataEdit = await getClinic(props.id);
-        setWebsite(dataEdit?.data?.website);
-        const newDataEdit = { ...dataEdit.data };
-        const dataWorkday = DEFAULT_LIST_WEEKDAY.map((item, index) => {
-          const workday = newDataEdit.workday.find((element) => element.weekday.id - 2 === index);
-          if (workday) {
-            return { work: true };
-          }
-          return { work: false };
-        });
-        const dataPhone = newDataEdit.phone.map((item) => {
-          return { phone_number: item.phone_number, id: item.id };
-        });
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     if (props.id) {
+  //       setLoadingPage(true);
+  //       const dataEdit = await getClinic(props.id);
+  //       setWebsite(dataEdit?.data?.website);
+  //       const newDataEdit = { ...dataEdit.data };
+  //       const dataWorkday = DEFAULT_LIST_WEEKDAY.map((item, index) => {
+  //         const workday = newDataEdit.workday.find((element) => element.weekday.id - 2 === index);
+  //         if (workday) {
+  //           return { work: true };
+  //         }
+  //         return { work: false };
+  //       });
+  //       const dataPhone = newDataEdit.phone.map((item) => {
+  //         return { phone_number: item.phone_number, id: item.id };
+  //       });
 
-        const dataSpecialization = newDataEdit.specialization_clinic.map((item) => {
-          return item.specialization.id;
-        });
-        const updateListDoctorCreate = newDataEdit.doctor.map((item) => {
-          return { id: item.id, name: item.name };
-        });
-        setTemptDataCreateDoctor(updateListDoctorCreate);
+  //       const dataSpecialization = newDataEdit.specialization_clinic.map((item) => {
+  //         return item.specialization.id;
+  //       });
+  //       const updateListDoctorCreate = newDataEdit.doctor.map((item) => {
+  //         return { id: item.id, name: item.name };
+  //       });
+  //       setTemptDataCreateDoctor(updateListDoctorCreate);
 
-        const newDistrits = [];
-        await Promise.all(
-          newDataEdit.address.map(async (item) => {
-            if (item.province !== null) {
-              const district = await getListDistrict(item.province?.id);
-              newDistrits.push(district.data);
-              return {
-                province: item.province.id,
-                district: item.district?.id,
-                name: item?.detail_address,
-                latitude: item?.latitude,
-                longitude: item?.longitude,
-              };
-            } else {
-              return {};
-            }
-          }),
-        );
-        setDistricts(newDistrits);
+  //       const newDistrits = [];
+  //       await Promise.all(
+  //         newDataEdit.address.map(async (item) => {
+  //           if (item.province !== null) {
+  //             const district = await getListDistrict(item.province?.id);
+  //             newDistrits.push(district.data);
+  //             return {
+  //               province: item.province.id,
+  //               district: item.district?.id,
+  //               name: item?.detail_address,
+  //               latitude: item?.latitude,
+  //               longitude: item?.longitude,
+  //             };
+  //           } else {
+  //             return {};
+  //           }
+  //         }),
+  //       );
+  //       setDistricts(newDistrits);
 
-        const dataAddress = newDataEdit.address.map((item) => {
-          console.log('item?.latitude', item);
-          return {
-            province: item.province?.id,
-            district: item.district?.id,
-            name: item?.detail_address,
-            id: item.id,
-            latitude: item?.latitude,
-            longitude: item?.longitude,
-          };
-        });
+  //       const dataAddress = newDataEdit.address.map((item) => {
+  //         console.log('item?.latitude', item);
+  //         return {
+  //           province: item.province?.id,
+  //           district: item.district?.id,
+  //           name: item?.detail_address,
+  //           id: item.id,
+  //           latitude: item?.latitude,
+  //           longitude: item?.longitude,
+  //         };
+  //       });
 
-        const dataCategoryServiceClinic = newDataEdit.category_service_clinic.map((item) => {
-          const dataService = item.service.map((element) => {
-            return {
-              name: element.name,
-              amount: element.amount,
-              unit: element.unit,
-              guarantee: element.guarantee,
-              id: element.id,
-            };
-          });
-          return {
-            category_service_id: item.category_service?.id,
-            service: dataService,
-            id: item.id,
-          };
-        });
+  //       const dataCategoryServiceClinic = newDataEdit.category_service_clinic.map((item) => {
+  //         const dataService = item.service.map((element) => {
+  //           return {
+  //             name: element.name,
+  //             amount: element.amount,
+  //             unit: element.unit,
+  //             guarantee: element.guarantee,
+  //             id: element.id,
+  //           };
+  //         });
+  //         return {
+  //           category_service_id: item.category_service?.id,
+  //           service: dataService,
+  //           id: item.id,
+  //         };
+  //       });
 
-        const dataTag = newDataEdit.tag_clinic.map((item) => {
-          return item.tag.id;
-        });
+  //       const dataTag = newDataEdit.tag_clinic.map((item) => {
+  //         return item.tag.id;
+  //       });
 
-        const listImage = await getListImage(props.id);
-        const dataImage = listImage?.data
-          ? listImage?.data?.map((item) => {
-              return {
-                link: item?.link,
-                image_type: item?.image_type,
-                id: item?.id,
-              };
-            })
-          : [];
+  //       const listImage = await getListImage(props.id);
+  //       const dataImage = listImage?.data
+  //         ? listImage?.data?.map((item) => {
+  //             return {
+  //               link: item?.link,
+  //               image_type: item?.image_type,
+  //               id: item?.id,
+  //             };
+  //           })
+  //         : [];
 
-        // Set url s3 show view
-        // setFileBanner(dataImage.find((item) => item.image_type === 'BANNER')?.link);
-        // setFileList(dataImage.filter((item) => item.image_type === 'INTRODUCE'));
-        const dataDoctor = newDataEdit.doctor.map((item) => {
-          return item.id;
-        });
+  //       // Set url s3 show view
+  //       // setFileBanner(dataImage.find((item) => item.image_type === 'BANNER')?.link);
+  //       // setFileList(dataImage.filter((item) => item.image_type === 'INTRODUCE'));
+  //       const dataDoctor = newDataEdit.doctor.map((item) => {
+  //         return item.id;
+  //       });
 
-        const dataTime = [
-          moment(newDataEdit.time_start ? newDataEdit.time_start : '08:00', 'HH:mm'),
-          moment(newDataEdit.time_end ? newDataEdit.time_end : '20:00', 'HH:mm'),
-        ];
+  //       const dataTime = [
+  //         moment(newDataEdit.time_start ? newDataEdit.time_start : '08:00', 'HH:mm'),
+  //         moment(newDataEdit.time_end ? newDataEdit.time_end : '20:00', 'HH:mm'),
+  //       ];
 
-        const dataLogo = dataImage.find((item) => item.image_type === 'AVATAR');
-        const dataImageIntroduce = dataImage.filter((item) => item.image_type === 'INTRODUCE');
-        const dataCover = dataImage.find((item) => item.image_type === 'BANNER');
+  //       const dataLogo = dataImage.find((item) => item.image_type === 'AVATAR');
+  //       const dataImageIntroduce = dataImage.filter((item) => item.image_type === 'INTRODUCE');
+  //       const dataCover = dataImage.find((item) => item.image_type === 'BANNER');
 
-        form.setFieldsValue({
-          ...newDataEdit,
-          time: dataTime,
-          weekday: dataWorkday,
-          phone: dataPhone,
-          specialization: dataSpecialization,
-          list_address: dataAddress,
-          category_service_clinic: dataCategoryServiceClinic,
-          tag: dataTag,
-          // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
-          logo: dataLogo
-            ? [
-                {
-                  uid: dataLogo.id,
-                  name: 'Hình ảnh',
-                  status: 'done',
-                  url: dataLogo?.link,
-                },
-              ]
-            : [],
-          logoId: dataLogo?.id,
-          cover: dataCover
-            ? [
-                {
-                  uid: dataCover.id,
-                  name: 'Hình ảnh',
-                  status: 'done',
-                  url: dataCover?.link,
-                },
-              ]
-            : [],
-          coverId: dataCover?.id,
-          image_introduce: dataImageIntroduce
-            ? dataImageIntroduce.map((item) => {
-                return {
-                  uid: item.id,
-                  name: 'Hình ảnh',
-                  status: 'done',
-                  url: item?.link,
-                };
-              })
-            : [],
-          doctor: dataDoctor,
-        });
+  //       form.setFieldsValue({
+  //         ...newDataEdit,
+  //         time: dataTime,
+  //         weekday: dataWorkday,
+  //         phone: dataPhone,
+  //         specialization: dataSpecialization,
+  //         list_address: dataAddress,
+  //         category_service_clinic: dataCategoryServiceClinic,
+  //         tag: dataTag,
+  //         // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
+  //         logo: dataLogo
+  //           ? [
+  //               {
+  //                 uid: dataLogo.id,
+  //                 name: 'Hình ảnh',
+  //                 status: 'done',
+  //                 url: dataLogo?.link,
+  //               },
+  //             ]
+  //           : [],
+  //         logoId: dataLogo?.id,
+  //         cover: dataCover
+  //           ? [
+  //               {
+  //                 uid: dataCover.id,
+  //                 name: 'Hình ảnh',
+  //                 status: 'done',
+  //                 url: dataCover?.link,
+  //               },
+  //             ]
+  //           : [],
+  //         coverId: dataCover?.id,
+  //         image_introduce: dataImageIntroduce
+  //           ? dataImageIntroduce.map((item) => {
+  //               return {
+  //                 uid: item.id,
+  //                 name: 'Hình ảnh',
+  //                 status: 'done',
+  //                 url: item?.link,
+  //               };
+  //             })
+  //           : [],
+  //         doctor: dataDoctor,
+  //       });
 
-        setLoadingPage(false);
-      }
-    }
-    fetchData();
-  }, [props.id]);
+  //       setLoadingPage(false);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [props.id]);
 
-  useEffect(() => {
-    if (temptDataCreateDoctor.length > 0) {
-      const finalDataCreateDoctor = temptDataCreateDoctor.concat([...dataCreateDoctor]);
-      setTemptDataCreateDoctor([]);
-      setDataCreateDoctor(finalDataCreateDoctor);
-    }
-  }, [dataCreateDoctor]);
+  // useEffect(() => {
+  //   if (temptDataCreateDoctor.length > 0) {
+  //     const finalDataCreateDoctor = temptDataCreateDoctor.concat([...dataCreateDoctor]);
+  //     setTemptDataCreateDoctor([]);
+  //     setDataCreateDoctor(finalDataCreateDoctor);
+  //   }
+  // }, [dataCreateDoctor]);
 
   // upload Image introduce
   const beforeUpload = (file) => {
@@ -432,6 +435,100 @@ const CreateClinicForm = (props) => {
     }
     return isMp4OrMov;
   };
+
+  useEffect(() => {
+    async function fetch() {
+      // form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
+      let result;
+      if (props.id) {
+        result = await getDataCourse(props.id);
+      }
+      setDataFormCourse(result?.data);
+    }
+    fetch();
+    // setLoadingPage(false);
+  }, []);
+
+  useEffect(() => {
+    console.log('searchdata ', dataFormCourse);
+  }, [dataFormCourse]);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      name: dataFormCourse?.nameCourse,
+      price: dataFormCourse?.price,
+      status: dataFormCourse?.isActive,
+      course_level: `${dataFormCourse?.start}-${dataFormCourse?.target}`,
+      cover: [
+        {
+          fileId: dataFormCourse?.file[0]?.id,
+          name: 'Hình ảnh',
+          url: dataFormCourse?.file[0]?.url,
+        },
+      ],
+      introduce: dataFormCourse?.introduce,
+      reading: dataFormCourse?.reading,
+      listening: dataFormCourse?.listening,
+      speaking: dataFormCourse?.speaking,
+      writing: dataFormCourse?.writing,
+      course_section: dataFormCourse?.section?.map((item) => {
+        const lessons = item.lesson?.map((itemLesson) => {
+          return {
+            id: itemLesson.id,
+            name: itemLesson.nameLesson,
+            video: [
+              {
+                fileId: itemLesson?.file[0]?.id,
+                name: 'Video',
+                url: itemLesson?.file[0]?.url,
+              },
+            ],
+          };
+        });
+        return {
+          sectionId: item.id,
+          section_name: item.nameSection,
+          lessons: lessons,
+        };
+      }),
+      // category_service_clinic: dataCategoryServiceClinic,
+      // tag: dataTag,
+      // // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
+      // logo: dataLogo
+      //   ? [
+      //     {
+      //       uid: dataLogo.id,
+      //       name: 'Hình ảnh',
+      //       status: 'done',
+      //       url: dataLogo?.link,
+      //     },
+      //   ]
+      //   : [],
+      // logoId: dataLogo?.id,
+      // cover: dataCover
+      //   ? [
+      //     {
+      //       uid: dataCover.id,
+      //       name: 'Hình ảnh',
+      //       status: 'done',
+      //       url: dataCover?.link,
+      //     },
+      //   ]
+      //   : [],
+      // coverId: dataCover?.id,
+      // image_introduce: dataImageIntroduce
+      //   ? dataImageIntroduce.map((item) => {
+      //     return {
+      //       uid: item.id,
+      //       name: 'Hình ảnh',
+      //       status: 'done',
+      //       url: item?.link,
+      //     };
+      //   })
+      //   : [],
+      // doctor: dataDoctor,
+    });
+  }, [dataFormCourse]);
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -599,7 +696,12 @@ const CreateClinicForm = (props) => {
                   },
                 ]}
               >
-                <InputNumber type="number" placeholder="Ví dụ: 800,000" />
+                <InputNumber
+                  type="number"
+                  placeholder="Ví dụ: 800,000"
+                  // formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  // parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} xl={6} className="padding-right">
@@ -681,32 +783,32 @@ const CreateClinicForm = (props) => {
                   placeholder="Chọn trình độ"
                   options={[
                     {
-                      value: 0,
+                      value: '0-100',
                       label: 'Junior',
                     },
                     {
-                      value: 2,
+                      value: '100-300',
                       label: '0 - 3.0',
                     },
                     {
-                      value: 4,
+                      value: '300-450',
                       label: '3.0 - 4.5',
                     },
                     {
-                      value: 5,
+                      value: '450-550',
                       label: '4.5 - 5.5',
                     },
                     {
-                      value: 6,
+                      value: '550-650',
                       label: '5.5 - 6.5',
                     },
                     {
-                      value: 7,
+                      value: '650-750',
                       label: '6.5 - 7.5',
                     },
                     {
-                      value: 8,
-                      label: '7.5+',
+                      value: '750-850',
+                      label: 'Training',
                     },
                   ]}
                 />
@@ -1031,7 +1133,7 @@ const CreateClinicForm = (props) => {
                 <Input.TextArea rows={2} />
               </Form.Item>
             </Col>
-            <Col xl={12}>
+            <Col xl={12} className="padding-right">
               <Form.Item
                 name="speaking"
                 label="Speaking"
@@ -1326,7 +1428,7 @@ const CreateClinicForm = (props) => {
   const onFinish = async () => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
-    const result = await createCourse(fieldsValue);
+    // const result = await createCourse(fieldsValue);
     console.log('fieldsValue', fieldsValue);
     // const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
     // const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
@@ -1372,21 +1474,21 @@ const CreateClinicForm = (props) => {
 
     // console.log('newImage', newImage);
 
-    // if (props.type === 'EDIT') {
-    //   const result = await updateClinic(
-    //     { ...fieldsValue, time_start, time_end, images: newImage },
-    //     props.id,
-    //   );
-    //   if (result.status === 200) {
-    //     props.onDone();
-    //   }
-    // } else {
-    //   const result = await createClinic({ ...fieldsValue, time_start, time_end, images: newImage });
-    //   if (result.status === 200) {
-    //     form.resetFields();
-    //     history.push('/clinic');
-    //   }
-    // }
+    if (props.type === 'EDIT') {
+      const result = await updateCourse(
+        fieldsValue,
+        props.id,
+      );
+      if (result.status === 200) {
+        props.onDone();
+      }
+    } else {
+      const result = await createClinic({ ...fieldsValue, time_start, time_end, images: newImage });
+      if (result.status === 200) {
+        form.resetFields();
+        history.push('/clinic');
+      }
+    }
 
     setLoading(false);
   };

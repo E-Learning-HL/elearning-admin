@@ -52,6 +52,23 @@ export async function getListCourse(
   };
 }
 
+export async function getDataCourse(id: number){
+  const result = await request(`${DEV_API_HOST}/api/courses/${id}`, {
+    method: 'GET'
+  });
+  return {
+    data: result,
+  };
+}
+export async function updateCourse(body: any, id: number){
+  const result = await request(`${DEV_API_HOST}/api/courses/${id}`, {
+    method: 'PUT',
+    data: {...body}
+  });
+  return {
+    data: result,
+  };
+}
 
 
 
