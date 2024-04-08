@@ -474,7 +474,7 @@ const CreateClinicForm = (props) => {
       course_section: dataFormCourse?.section?.map((item) => {
         const lessons = item.lesson?.map((itemLesson) => {
           return {
-            id: itemLesson.id,
+            lessonId: itemLesson.id,
             name: itemLesson.nameLesson,
             video: [
               {
