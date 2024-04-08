@@ -692,7 +692,7 @@ const CreateClinicForm = (props) => {
                 rules={[
                   {
                     required: true,
-                    message: 'Bạn chưa chọn trạng thái',
+                    message: 'Bạn chưa điền giá',
                   },
                 ]}
               >
@@ -825,7 +825,7 @@ const CreateClinicForm = (props) => {
                 rules={[
                   {
                     required: true,
-                    message: 'Bạn chưa chọn trạng thái',
+                    message: 'Bạn chưa chọn upload ảnh bìa',
                   },
                 ]}
               >
@@ -1085,7 +1085,7 @@ const CreateClinicForm = (props) => {
                 rules={[
                   {
                     required: true,
-                    message: 'Bạn chưa chọn trạng thái',
+                    message: 'Bạn chưa điền thông tin giới thiệu',
                   },
                 ]}
               >
@@ -1327,6 +1327,12 @@ const CreateClinicForm = (props) => {
                                           name={[subField.name, 'video']}
                                           valuePropName="fileList"
                                           getValueFromEvent={normFile}
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message: 'Bạn chưa upload file',
+                                            },
+                                          ]}
                                         >
                                           <Upload
                                             listType="picture"
