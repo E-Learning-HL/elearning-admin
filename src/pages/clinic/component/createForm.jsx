@@ -50,7 +50,7 @@ import {
   getListImage,
   createCourse,
   getDataCourse,
-  updateCourse
+  updateCourse,
 } from '../service';
 
 import CreateImportForm from './importForm';
@@ -437,15 +437,17 @@ const CreateClinicForm = (props) => {
   };
 
   useEffect(() => {
-    async function fetch() {
-      // form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
-      let result;
-      if (props.id) {
-        result = await getDataCourse(props.id);
+    if (props.type === 'EDIT') {
+      async function fetch() {
+        // form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
+        let result;
+        if (props.id) {
+          result = await getDataCourse(props.id);
+        }
+        setDataFormCourse(result?.data);
       }
-      setDataFormCourse(result?.data);
+      fetch();
     }
-    fetch();
     // setLoadingPage(false);
   }, []);
 
@@ -454,80 +456,81 @@ const CreateClinicForm = (props) => {
   }, [dataFormCourse]);
 
   useEffect(() => {
-    form.setFieldsValue({
-      name: dataFormCourse?.nameCourse,
-      price: dataFormCourse?.price,
-      status: dataFormCourse?.isActive,
-      course_level: `${dataFormCourse?.start}-${dataFormCourse?.target}`,
-      cover: [
-        {
-          fileId: dataFormCourse?.file[0]?.id,
-          name: 'Hình ảnh',
-          url: dataFormCourse?.file[0]?.url,
-        },
-      ],
-      introduce: dataFormCourse?.introduce,
-      reading: dataFormCourse?.reading,
-      listening: dataFormCourse?.listening,
-      speaking: dataFormCourse?.speaking,
-      writing: dataFormCourse?.writing,
-      course_section: dataFormCourse?.section?.map((item) => {
-        const lessons = item.lesson?.map((itemLesson) => {
+    if (props.type === 'EDIT')
+      form.setFieldsValue({
+        name: dataFormCourse?.nameCourse,
+        price: dataFormCourse?.price,
+        status: dataFormCourse?.isActive,
+        course_level: `${dataFormCourse?.start}-${dataFormCourse?.target}`,
+        cover: [
+          {
+            fileId: dataFormCourse?.file[0]?.id,
+            name: 'Hình ảnh',
+            url: dataFormCourse?.file[0]?.url,
+          },
+        ],
+        introduce: dataFormCourse?.introduce,
+        reading: dataFormCourse?.reading,
+        listening: dataFormCourse?.listening,
+        speaking: dataFormCourse?.speaking,
+        writing: dataFormCourse?.writing,
+        course_section: dataFormCourse?.section?.map((item) => {
+          const lessons = item.lesson?.map((itemLesson) => {
+            return {
+              lessonId: itemLesson.id,
+              name: itemLesson.nameLesson,
+              video: [
+                {
+                  fileId: itemLesson?.file[0]?.id,
+                  name: 'Video',
+                  url: itemLesson?.file[0]?.url,
+                },
+              ],
+            };
+          });
           return {
-            lessonId: itemLesson.id,
-            name: itemLesson.nameLesson,
-            video: [
-              {
-                fileId: itemLesson?.file[0]?.id,
-                name: 'Video',
-                url: itemLesson?.file[0]?.url,
-              },
-            ],
+            sectionId: item.id,
+            section_name: item.nameSection,
+            lessons: lessons,
           };
-        });
-        return {
-          sectionId: item.id,
-          section_name: item.nameSection,
-          lessons: lessons,
-        };
-      }),
-      // category_service_clinic: dataCategoryServiceClinic,
-      // tag: dataTag,
-      // // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
-      // logo: dataLogo
-      //   ? [
-      //     {
-      //       uid: dataLogo.id,
-      //       name: 'Hình ảnh',
-      //       status: 'done',
-      //       url: dataLogo?.link,
-      //     },
-      //   ]
-      //   : [],
-      // logoId: dataLogo?.id,
-      // cover: dataCover
-      //   ? [
-      //     {
-      //       uid: dataCover.id,
-      //       name: 'Hình ảnh',
-      //       status: 'done',
-      //       url: dataCover?.link,
-      //     },
-      //   ]
-      //   : [],
-      // coverId: dataCover?.id,
-      // image_introduce: dataImageIntroduce
-      //   ? dataImageIntroduce.map((item) => {
-      //     return {
-      //       uid: item.id,
-      //       name: 'Hình ảnh',
-      //       status: 'done',
-      //       url: item?.link,
-      //     };
-      //   })
-      //   : [],
-      // doctor: dataDoctor,
-    });
+        }),
+        // category_service_clinic: dataCategoryServiceClinic,
+        // tag: dataTag,
+        // // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
+        // logo: dataLogo
+        //   ? [
+        //     {
+        //       uid: dataLogo.id,
+        //       name: 'Hình ảnh',
+        //       status: 'done',
+        //       url: dataLogo?.link,
+        //     },
+        //   ]
+        //   : [],
+        // logoId: dataLogo?.id,
+        // cover: dataCover
+        //   ? [
+        //     {
+        //       uid: dataCover.id,
+        //       name: 'Hình ảnh',
+        //       status: 'done',
+        //       url: dataCover?.link,
+        //     },
+        //   ]
+        //   : [],
+        // coverId: dataCover?.id,
+        // image_introduce: dataImageIntroduce
+        //   ? dataImageIntroduce.map((item) => {
+        //     return {
+        //       uid: item.id,
+        //       name: 'Hình ảnh',
+        //       status: 'done',
+        //       url: item?.link,
+        //     };
+        //   })
+        //   : [],
+        // doctor: dataDoctor,
+      });
   }, [dataFormCourse]);
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -610,20 +613,21 @@ const CreateClinicForm = (props) => {
     return (
       <div>
         {/* type edit thì mới xuất hiện  */}
-        <div span={24} className="wp-edit-menu">
-          <Menu
-            onClick={(e) => setCurrent(e.key)}
-            selectedKeys={[current]}
-            mode="horizontal"
-            items={items}
-            className="edit-menu"
-          />
-        </div>
+        {props.type === 'EDIT' && (
+          <div span={24} className="wp-edit-menu">
+            <Menu
+              onClick={(e) => setCurrent(e.key)}
+              selectedKeys={[current]}
+              mode="horizontal"
+              items={items}
+              className="edit-menu"
+            />
+          </div>
+        )}
 
         {/* Hiển thị collapse khi menu đổi sang collapse */}
         {/* Khi nào current là sort và props type là EDIT */}
-        {/* {current === 'sort' && props.type === 'EDIT' && ( */}
-        {current === 'sort' && (
+        {current === 'sort' && props.type === 'EDIT' && (
           <Collapse defaultActiveKey={['1']}>
             <Panel header="Drag Sort Table" key="1">
               <DragSortTable
@@ -1436,60 +1440,14 @@ const CreateClinicForm = (props) => {
     const fieldsValue = await form.validateFields();
     // const result = await createCourse(fieldsValue);
     console.log('fieldsValue', fieldsValue);
-    // const time_start = moment(fieldsValue.time[0])?.format('HH:mm');
-    // const time_end = moment(fieldsValue.time[1])?.format('HH:mm');
-
-    // if (!fieldsValue.image_introduce) {
-    //   fieldsValue.image_introduce = [];
-    // }
-
-    // const introduceImage = await Promise.all(
-    //   fieldsValue.image_introduce.map(async (item) => {
-    //     if (item?.originFileObj) {
-    //       item.dataBase64 = await getNewBase64(item?.originFileObj);
-    //     }
-    //     return {
-    //       link: item,
-    //       image_type: 'INTRODUCE',
-    //       id: item.url ? item.uid : undefined,
-    //     };
-    //   }),
-    // );
-    // console.log('introduceImage', introduceImage);
-    // let dataFieldsValueLogo = {};
-    // if (fieldsValue.logo && fieldsValue.logo[0]) {
-    //   if (fieldsValue.logo[0]?.originFileObj) {
-    //     fieldsValue.logo[0].dataBase64 = await getNewBase64(fieldsValue.logo[0]?.originFileObj);
-    //   }
-    //   dataFieldsValueLogo = fieldsValue.logo[0];
-    // }
-
-    // let dataFieldsValueCover = {};
-    // if (fieldsValue.cover && fieldsValue.cover[0]) {
-    //   if (fieldsValue.cover[0]?.originFileObj) {
-    //     fieldsValue.cover[0].dataBase64 = await getNewBase64(fieldsValue.cover[0]?.originFileObj);
-    //   }
-    //   dataFieldsValueCover = fieldsValue.cover[0];
-    // }
-
-    // const newImage = [
-    //   { link: dataFieldsValueLogo, image_type: 'AVATAR', id: form.getFieldValue('logoId') },
-    //   { link: dataFieldsValueCover, image_type: 'BANNER', id: form.getFieldValue('coverId') },
-    //   ...introduceImage,
-    // ];
-
-    // console.log('newImage', newImage);
 
     if (props.type === 'EDIT') {
-      const result = await updateCourse(
-        fieldsValue,
-        props.id,
-      );
+      const result = await updateCourse(fieldsValue, props.id);
       if (result.status === 200) {
         props.onDone();
       }
     } else {
-      const result = await createClinic({ ...fieldsValue, time_start, time_end, images: newImage });
+      const result = await createCourse(fieldsValue);
       if (result.status === 200) {
         form.resetFields();
         history.push('/clinic');
