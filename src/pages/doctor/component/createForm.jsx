@@ -24,7 +24,7 @@ import {
 } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
-import { createDoctor, editDoctor, getDoctor, getListCourse } from '../service';
+import { createDoctor, editDoctor, getDoctor, getListCourse, createAssigment } from '../service';
 import './index.less';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
@@ -141,7 +141,27 @@ const CreateDoctorForm = (props) => {
     const fieldsValue = await form.validateFields();
     // const newImage = [{ link: fieldsValue.avatar, image_type: 'AVATAR' }];
 
-    console.log('fieldsValue', fieldsValue);
+    const body = {
+      name: fieldsValue.name,
+      status: fieldsValue.status,
+      exam_type: fieldsValue.type_assign,
+      course_id: fieldsValue.course_location[0],
+      section_id: fieldsValue.course_location[1] ? fieldsValue.course_location[1] : null,
+      task: [
+        {
+          audio: fieldsValue.audio,
+          task_type: 'LISTENING',
+          question: fieldsValue.listening_question,
+        },
+        {
+          content: fieldsValue.reading_content,
+          task_type: 'READING',
+          question: fieldsValue.reading_question,
+        },
+      ],
+    };
+    // console.log('fieldsValue', fieldsValue);
+    console.log("bodydyyyy", body)
 
     // if (props.type === 'EDIT') {
     //   const result = await editDoctor({ ...fieldsValue }, props.id);
@@ -149,11 +169,11 @@ const CreateDoctorForm = (props) => {
     //     props.onDone();
     //   }
     // } else {
-    //   const result = await createDoctor({ ...fieldsValue, images: newImage });
-    //   if (result.status === 200) {
-    //     form.resetFields();
-    //     history.push('/doctor');
-    //   }
+      const result = await createAssigment(body);
+      if (result.status === 200) {
+        form.resetFields();
+        history.push('/doctor');
+      }
     //   if (props.type === 'CREATE-CLINIC') {
     //     props.onDone(result.data.id);
     //   }
@@ -244,7 +264,7 @@ const CreateDoctorForm = (props) => {
           <Col xl={8}>
             <FormItem
               label="Loại Assignments"
-              name="type-assign"
+              name="type_assign"
               rules={[
                 {
                   required: true,
@@ -455,7 +475,7 @@ const CreateDoctorForm = (props) => {
                                 </FormItem>
                                 <Form.Item
                                   // label="Tên dịch vụ"
-                                  name={[field.name, 'question_title']}
+                                  name={[field.name, 'title']}
                                   rules={[
                                     {
                                       required: false,
@@ -522,12 +542,35 @@ const CreateDoctorForm = (props) => {
                                           </Form.Item>
                                         </Col>
                                         <Col className="check-box">
-                                          <FormItem name={[subField.name, 'correct']}>
-                                            {typeListeningQuestion[index] === 'INPUT' ? (
-                                              <Checkbox checked={true} disabled={true}></Checkbox>
-                                            ) : (
+                                          {/* <FormItem
+                                              name={[subField.name, 'is_correct']}
+                                              // valuePropName="checked"
+                                              initialValue={typeListeningQuestion[index] === 'INPUT'}
+                                            >
+                                              {
+                                                (typeListeningQuestion[index] === 'SIMPLE_CHOICE' ||
+                                                typeListeningQuestion[index] === 'MULTIPLE_CHOICE') &&
+                                                <Checkbox disabled={typeListeningQuestion[index] === 'INPUT'}></Checkbox>
+                                              }
+                                              
+                                            </FormItem> */}
+
+                                          {/* {(typeListeningQuestion[index] === 'SIMPLE_CHOICE' ||
+                                            typeListeningQuestion[index] === 'MULTIPLE_CHOICE') && (
+                                            <FormItem
+                                              name={[subField.name, 'is_correct']}
+                                              valuePropName="checked"
+                                              initialValue={false}
+                                            >
                                               <Checkbox></Checkbox>
-                                            )}
+                                            </FormItem>
+                                          )} */}
+                                          <FormItem
+                                            name={[subField.name, 'is_correct']}
+                                            valuePropName="checked"
+                                            initialValue={false}
+                                          >
+                                            <Checkbox></Checkbox>
                                           </FormItem>
                                         </Col>
                                         <CloseOutlined
@@ -651,7 +694,7 @@ const CreateDoctorForm = (props) => {
                                 </FormItem>
                                 <Form.Item
                                   // label="Tên dịch vụ"
-                                  name={[field.name, 'question_title']}
+                                  name={[field.name, 'title']}
                                   rules={[
                                     {
                                       required: false,
@@ -717,19 +760,12 @@ const CreateDoctorForm = (props) => {
                                           </Form.Item>
                                         </Col>
                                         <Col className="check-box">
-                                          <FormItem name={[subField.name, 'correct']}>
-                                            <Checkbox
-                                              defaultChecked={
-                                                typeReadingQuestion[index] === 'INPUT'
-                                                  ? true
-                                                  : false
-                                              }
-                                              disabled={
-                                                typeReadingQuestion[index] === 'INPUT'
-                                                  ? true
-                                                  : false
-                                              }
-                                            ></Checkbox>
+                                          <FormItem
+                                            name={[subField.name, 'is_correct']}
+                                            valuePropName="checked"
+                                            initialValue={false}
+                                          >
+                                            <Checkbox></Checkbox>
                                           </FormItem>
                                         </Col>
                                         <CloseOutlined

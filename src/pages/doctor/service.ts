@@ -45,6 +45,25 @@ export async function getListCourse() {
   };
 }
 
+export async function createAssigment(body: any){
+  try {
+    let res = await request(`${DEV_API_HOST}/api/assignments/create-assignment`, {
+      method: 'POST',
+      // headers: {
+      //   'Content-Type': 'application/json',
+      //   Authorization: `Bearer ${getAuthority()}`,
+      // },
+      data: { ...body },
+    });
+    if (res?.status === 200) {
+      message.success('Thành công');
+    }
+    return res;
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function removeDoctor(id: number) {
   return remove(`admin/doctor/${id}`);
 }
