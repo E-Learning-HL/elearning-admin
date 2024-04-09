@@ -24,7 +24,7 @@ import {
 } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
-import { createDoctor, editDoctor, getDoctor, getListService } from '../service';
+import { createDoctor, editDoctor, getDoctor, getListCourse } from '../service';
 import './index.less';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
@@ -44,56 +44,90 @@ const normFile = (e) => {
   }
   return e?.fileList;
 };
+
 const CreateDoctorForm = (props) => {
+  const editor = useRef();
+  const getSunEditorInstance = (sunEditor) => {
+    editor.current = sunEditor;
+  };
   const [form] = Form.useForm();
   const [loadingPage, setLoadingPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dataCreate, setDataCreate] = useState(null);
   const [typeAssign, setTypeAssign] = useState(null);
   const [renderTypeExam, setRenderTypeExam] = useState([]);
+  const [dataListCourse, setDataListCourse] = useState(null);
+  const [courseOptions, setCourseOptions] = useState(null);
+  const [typeListeningQuestion, setTypeListeningQuestion] = useState([]);
+  const [typeReadingQuestion, setTypeReadingQuestion] = useState([]);
 
-  const editor = useRef();
+  useEffect(() => {
+    console.log('typeListeningQuestion', typeListeningQuestion);
+  }, [typeListeningQuestion]);
 
-  const getSunEditorInstance = (sunEditor) => {
-    editor.current = sunEditor;
-  };
+  useEffect(() => {
+    async function fetchDataListCourse() {
+      const data = await getListCourse();
+      setDataListCourse(data.data);
+    }
+
+    fetchDataListCourse();
+  }, []);
+
+  useEffect(() => {
+    if (dataListCourse) {
+      const mappedCourses = dataListCourse?.map((item) => ({
+        value: item.id,
+        label: item.nameCourse,
+        children:
+          typeAssign === 'TESTS'
+            ? []
+            : (item.section || []).map((itemSection) => ({
+                value: itemSection.id,
+                label: itemSection.nameSection,
+              })),
+      }));
+      setCourseOptions(mappedCourses);
+    }
+  }, [dataListCourse, typeAssign]);
+
+  useEffect(() => {
+    console.log('coursedataa', courseOptions);
+  }, [typeAssign]);
 
   // Example data for course
-  const courseOptions = [
-    {
-      value: 'ielts 4.5',
-      label: 'ielts 4.5',
-      children: [
-        {
-          value: 'section 1',
-          label: 'section 1',
-          
-        },
-      ],
-    },
-    {
-      value: 'ielts 6.5',
-      label: 'ielts 6.5',
-      children: [
-        {
-          value: 'section 1',
-          label: 'section 1',
-          
-        },
-      ],
-    },
-    {
-      value: 'ielts 5.5',
-      label: 'ielts 5.5',
-      children: [
-        {
-          value: 'section 1',
-          label: 'section 1',
-          
-        },
-      ],
-    },
-  ];
+  // const courseOptions = [
+  //   {
+  //     value: 'ielts 4.5',
+  //     label: 'ielts 4.5',
+  //     children: [
+  //       {
+  //         value: 'section 1',
+  //         label: 'section 1',
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     value: 'ielts 6.5',
+  //     label: 'ielts 6.5',
+  //     children: [
+  //       {
+  //         value: 'section 1',
+  //         label: 'section 1',
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     value: 'ielts 5.5',
+  //     label: 'ielts 5.5',
+  //     children: [
+  //       {
+  //         value: 'section 1',
+  //         label: 'section 1',
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const fillterOption = (input, option) => {
     if (option.props.value) {
@@ -339,7 +373,7 @@ const CreateDoctorForm = (props) => {
                 </FormItem>
               </Col>
               {/* Content */}
-              <Col xl={24}>
+              {/* <Col xl={24}>
                 <FormItem
                   label="Nội dung"
                   name="listening_content"
@@ -365,18 +399,60 @@ const CreateDoctorForm = (props) => {
                     }}
                   />
                 </FormItem>
-              </Col>
+              </Col> */}
               <Col span={24} style={{ marginBottom: 15 }} className="question-card">
                 <Form.List name="listening_question" initialValue={[{}]}>
                   {(fields, { add, remove }) => (
                     <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
-                      {fields.map((field) => {
+                      {fields.map((field, index) => {
                         return (
                           <Card
                             size="small"
                             title={
                               <div className="header-card">
-                                <span>Question {field.name + 1}</span>
+                                <span>Câu hỏi {field.name + 1}</span>
+                                <FormItem
+                                  name={[field.name, 'question_type']}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: 'Bạn chưa chọn loại câu hỏi',
+                                    },
+                                  ]}
+                                  style={{ maxWidth: 150 }}
+                                >
+                                  <Select
+                                    // defaultValue={'SIMPLE_CHOICE'}
+                                    placeholder="Chọn loại câu hỏi"
+                                    onChange={(e) => {
+                                      // setTypeAssign(e);
+                                      // if (e == 'TESTS')
+                                      //   form.setFieldValue('type-exam', ['LISTENING', 'READING']);
+                                      // else form.setFieldValue('type-exam', []);
+                                      const newTypeListeningQuestion = [...typeListeningQuestion];
+                                      if (newTypeListeningQuestion[index]) {
+                                        newTypeListeningQuestion[index] = e;
+                                      } else {
+                                        newTypeListeningQuestion.push(e);
+                                      }
+                                      setTypeListeningQuestion(newTypeListeningQuestion);
+                                    }}
+                                    options={[
+                                      {
+                                        value: 'INPUT',
+                                        label: 'Input',
+                                      },
+                                      {
+                                        value: 'SIMPLE_CHOICE',
+                                        label: 'Simple Choice',
+                                      },
+                                      {
+                                        value: 'MULTIPLE_CHOICE',
+                                        label: 'Multiple Choice',
+                                      },
+                                    ]}
+                                  />
+                                </FormItem>
                                 <Form.Item
                                   // label="Tên dịch vụ"
                                   name={[field.name, 'question_title']}
@@ -387,7 +463,24 @@ const CreateDoctorForm = (props) => {
                                     },
                                   ]}
                                 >
-                                  <Input></Input>
+                                  {typeListeningQuestion[index] === 'INPUT' ? (
+                                    <SunEditor
+                                      placeholder="Nhập câu hỏi"
+                                      getSunEditorInstance={getSunEditorInstance}
+                                      setOptions={{
+                                        height: 250,
+                                        buttonList: [
+                                          ['formatBlock'],
+                                          ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
+                                          ['bold', 'underline', 'italic', 'strike'],
+                                          ['fontColor', 'hiliteColor'],
+                                          ['align', 'list'],
+                                        ],
+                                      }}
+                                    />
+                                  ) : (
+                                    <Input placeholder="Nhập câu hỏi"></Input>
+                                  )}
                                 </Form.Item>
                               </div>
                             }
@@ -412,10 +505,11 @@ const CreateDoctorForm = (props) => {
                                   <div
                                     style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}
                                   >
-                                    {subFields.map((subField) => (
+                                    {subFields.map((subField, awsIndex) => (
                                       <Row key={subField.key} className="row-answer">
                                         <Col span={12} className="padding-right">
                                           <Form.Item
+                                            // label={`Câu hỏi ${awsIndex+1}`}
                                             name={[subField.name, 'title']}
                                             rules={[
                                               {
@@ -424,12 +518,16 @@ const CreateDoctorForm = (props) => {
                                               },
                                             ]}
                                           >
-                                            <Input />
+                                            <Input placeholder={`Đáp án ${awsIndex + 1}`} />
                                           </Form.Item>
                                         </Col>
                                         <Col className="check-box">
                                           <FormItem name={[subField.name, 'correct']}>
-                                            <Checkbox></Checkbox>
+                                            {typeListeningQuestion[index] === 'INPUT' ? (
+                                              <Checkbox checked={true} disabled={true}></Checkbox>
+                                            ) : (
+                                              <Checkbox></Checkbox>
+                                            )}
                                           </FormItem>
                                         </Col>
                                         <CloseOutlined
@@ -502,13 +600,55 @@ const CreateDoctorForm = (props) => {
                 <Form.List name="reading_question" initialValue={[{}]}>
                   {(fields, { add, remove }) => (
                     <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
-                      {fields.map((field) => {
+                      {fields.map((field, index) => {
                         return (
                           <Card
                             size="small"
                             title={
                               <div className="header-card">
                                 <span>Question {field.name + 1}</span>
+                                <FormItem
+                                  name={[field.name, 'question_type']}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: 'Bạn chưa chọn loại câu hỏi',
+                                    },
+                                  ]}
+                                  style={{ maxWidth: 150 }}
+                                >
+                                  <Select
+                                    // defaultValue={'SIMPLE_CHOICE'}
+                                    placeholder="Chọn loại câu hỏi"
+                                    onChange={(e) => {
+                                      // setTypeAssign(e);
+                                      // if (e == 'TESTS')
+                                      //   form.setFieldValue('type-exam', ['LISTENING', 'READING']);
+                                      // else form.setFieldValue('type-exam', []);
+                                      const newTypeReadingQuestion = [...typeReadingQuestion];
+                                      if (newTypeReadingQuestion[index]) {
+                                        newTypeReadingQuestion[index] = e;
+                                      } else {
+                                        newTypeReadingQuestion.push(e);
+                                      }
+                                      setTypeReadingQuestion(newTypeReadingQuestion);
+                                    }}
+                                    options={[
+                                      {
+                                        value: 'INPUT',
+                                        label: 'Input',
+                                      },
+                                      {
+                                        value: 'SIMPLE_CHOICE',
+                                        label: 'Simple Choice',
+                                      },
+                                      {
+                                        value: 'MULTIPLE_CHOICE',
+                                        label: 'Multiple Choice',
+                                      },
+                                    ]}
+                                  />
+                                </FormItem>
                                 <Form.Item
                                   // label="Tên dịch vụ"
                                   name={[field.name, 'question_title']}
@@ -519,7 +659,24 @@ const CreateDoctorForm = (props) => {
                                     },
                                   ]}
                                 >
-                                  <Input></Input>
+                                  {typeReadingQuestion[index] === 'INPUT' ? (
+                                    <SunEditor
+                                      placeholder="Nhập câu hỏi"
+                                      getSunEditorInstance={getSunEditorInstance}
+                                      setOptions={{
+                                        height: 250,
+                                        buttonList: [
+                                          ['formatBlock'],
+                                          ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
+                                          ['bold', 'underline', 'italic', 'strike'],
+                                          ['fontColor', 'hiliteColor'],
+                                          ['align', 'list'],
+                                        ],
+                                      }}
+                                    />
+                                  ) : (
+                                    <Input placeholder="Nhập câu hỏi"></Input>
+                                  )}
                                 </Form.Item>
                               </div>
                             }
@@ -544,7 +701,7 @@ const CreateDoctorForm = (props) => {
                                   <div
                                     style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}
                                   >
-                                    {subFields.map((subField) => (
+                                    {subFields.map((subField, awsIndex) => (
                                       <Row key={subField.key} className="row-answer">
                                         <Col span={12} className="padding-right">
                                           <Form.Item
@@ -556,12 +713,23 @@ const CreateDoctorForm = (props) => {
                                               },
                                             ]}
                                           >
-                                            <Input />
+                                            <Input placeholder={`Đáp án ${awsIndex + 1}`} />
                                           </Form.Item>
                                         </Col>
                                         <Col className="check-box">
                                           <FormItem name={[subField.name, 'correct']}>
-                                            <Checkbox></Checkbox>
+                                            <Checkbox
+                                              defaultChecked={
+                                                typeReadingQuestion[index] === 'INPUT'
+                                                  ? true
+                                                  : false
+                                              }
+                                              disabled={
+                                                typeReadingQuestion[index] === 'INPUT'
+                                                  ? true
+                                                  : false
+                                              }
+                                            ></Checkbox>
                                           </FormItem>
                                         </Col>
                                         <CloseOutlined

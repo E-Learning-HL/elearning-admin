@@ -33,6 +33,18 @@ export async function getListDoctor(
   };
 }
 
+export async function getListCourse() {
+  const result = await request(`${DEV_API_HOST}/api/courses/get-list`, {
+    method: 'GET',
+    params: {
+      limit: 100
+    },
+  });
+  return {
+    data: result.data,
+  };
+}
+
 export async function removeDoctor(id: number) {
   return remove(`admin/doctor/${id}`);
 }
