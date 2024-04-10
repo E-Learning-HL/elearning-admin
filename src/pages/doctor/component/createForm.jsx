@@ -224,13 +224,13 @@ const CreateDoctorForm = (props) => {
           ],
           listening_question: taskListening?.question?.map((item) => {
             return {
-              id: item.id,
+              questionId: item.id,
               questionType: item.questionType,
               title: item.title,
               answer: item.answer.map((itemAws) => {
                 return {
                   title: itemAws.content,
-                  id: itemAws.id,
+                  answerId: itemAws.id,
                   is_correct: itemAws.isCorrect,
                 };
               }),
@@ -239,13 +239,13 @@ const CreateDoctorForm = (props) => {
           reading_content: taskReading?.content,
           reading_question: taskReading?.question?.map((item) => {
             return {
-              id: item.id,
+              questionId: item.id,
               questionType: item.questionType,
               title: item.title,
               answer: item.answer.map((itemAws) => {
                 return {
                   title: itemAws.content,
-                  id: itemAws.id,
+                  answerId: itemAws.id,
                   is_correct: itemAws.isCorrect,
                 };
               }),
