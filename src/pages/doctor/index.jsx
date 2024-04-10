@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { PageContainer, ProTable, ProDescriptions } from '@ant-design/pro-components';
 import { Button, Tooltip, Drawer, Modal, ConfigProvider } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getListDoctor, removeDoctor, getDoctor } from './service';
+import { getListAssign, removeDoctor, getDoctor } from './service';
 import NProgress from 'nprogress';
 import { history, useLocation } from 'umi';
 import iconExperience from '../../assets/image/icon-shield-done.png'
@@ -33,13 +33,13 @@ const Doctor = () => {
   const columns = [
     {
       title: 'Tên',
-      dataIndex: 'name',
+      dataIndex: 'nameAssignment',
       width: 300,
       // hideInSearch: true,
       render: (dom, entity) => {
         return (
           <div className="wrapper-first-column">
-            <img className="logo-clinic" src={entity.avatar} />
+            {/* <img className="logo-clinic" src={entity.avatar} /> */}
             <div className="wrapper-info">
               <a
                 onClick={() => {
@@ -67,7 +67,7 @@ const Doctor = () => {
             placeholder="Nhập tên Assignments"
             onChange={(event) => {
               event.persist();
-              form.setFieldsValue({ name: event.target.value });
+              form.setFieldsValue({ nameAssignment: event.target.value });
               setLoadingTable(true);
               if (!debouncing) {
                 setDebouncing(true);
@@ -86,8 +86,8 @@ const Doctor = () => {
     },
 
     {
-      title: 'Giới thiệu',
-      dataIndex: 'introduce',
+      title: 'Loại Assigment',
+      dataIndex: 'assignmentType',
       hideInSearch: true,
       render: (dom, entity) => {
         return <div className="introduce">{dom}</div>;
@@ -187,7 +187,7 @@ const Doctor = () => {
           actionRef={actionRef}
           rowKey="id"
           request={async (params, sorter, filter) => {
-            const listDoctor = await getListDoctor({ ...params, sorter, filter });
+            const listDoctor = await getListAssign({ ...params, sorter, filter });
             setLoadingTable(false);
             return listDoctor;
           }}
@@ -236,7 +236,7 @@ const Doctor = () => {
         )}
       </Drawer>
       <Modal
-        title="Chỉnh sửa thông tin Bác sĩ"
+        title="Chỉnh sửa thông tin Assignments"
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);

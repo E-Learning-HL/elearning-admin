@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-
+import ReactQuill from 'react-quill';
 import {
   LoadingOutlined,
   PlusSquareOutlined,
@@ -24,7 +24,7 @@ import {
 } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
-import { createDoctor, editDoctor, getDoctor, getListCourse, createAssigment } from '../service';
+import { createDoctor, editDoctor, getAssign, getListCourse, createAssigment } from '../service';
 import './index.less';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
@@ -60,10 +60,13 @@ const CreateDoctorForm = (props) => {
   const [courseOptions, setCourseOptions] = useState(null);
   const [typeListeningQuestion, setTypeListeningQuestion] = useState([]);
   const [typeReadingQuestion, setTypeReadingQuestion] = useState([]);
+  // const [triggerContent, setTriggerContent] = useState(null);
+  // const [key, setKey] = useState(0);
 
-  useEffect(() => {
-    console.log('typeListeningQuestion', typeListeningQuestion);
-  }, [typeListeningQuestion]);
+  // useEffect(() => {
+  //   if (props.id === 'EDIT') setTriggerContent(form.getFieldValue('reading_content'));
+  //   setKey((prevKey) => prevKey + 1);
+  // }, [form.getFieldValue('reading_content')]);
 
   useEffect(() => {
     async function fetchDataListCourse() {
@@ -90,10 +93,6 @@ const CreateDoctorForm = (props) => {
       setCourseOptions(mappedCourses);
     }
   }, [dataListCourse, typeAssign]);
-
-  useEffect(() => {
-    console.log('coursedataa', courseOptions);
-  }, [typeAssign]);
 
   // Example data for course
   // const courseOptions = [
@@ -144,40 +143,46 @@ const CreateDoctorForm = (props) => {
     const body = {
       name: fieldsValue.name,
       status: fieldsValue.status,
-      exam_type: fieldsValue.type_assign,
-      course_id: fieldsValue.course_location[0],
-      section_id: fieldsValue.course_location[1] ? fieldsValue.course_location[1] : null,
-      task: [
-        {
-          audio: fieldsValue.audio,
-          task_type: 'LISTENING',
-          question: fieldsValue.listening_question,
-        },
-        {
-          content: fieldsValue.reading_content,
-          task_type: 'READING',
-          question: fieldsValue.reading_question,
-        },
-      ],
+      examType: fieldsValue.type_assign,
+      courseId: fieldsValue.course_location[0],
+      sectionId: fieldsValue.course_location[1] || null,
+      task: [],
     };
-    // console.log('fieldsValue', fieldsValue);
-    console.log("bodydyyyy", body)
 
-    // if (props.type === 'EDIT') {
-    //   const result = await editDoctor({ ...fieldsValue }, props.id);
-    //   if (result.status === 200) {
-    //     props.onDone();
-    //   }
-    // } else {
-      const result = await createAssigment(body);
+    if (fieldsValue.audio && fieldsValue.listening_question) {
+      body.task.push({
+        audio: fieldsValue.audio,
+        taskType: 'LISTENING',
+        question: fieldsValue.listening_question,
+      });
+    }
+
+    if (fieldsValue.reading_content && fieldsValue.reading_question) {
+      body.task.push({
+        content: fieldsValue.reading_content,
+        taskType: 'READING',
+        question: fieldsValue.reading_question,
+      });
+    }
+    // console.log('fieldsValue', fieldsValue);
+    console.log('bodydyyyy', body);
+
+    if (props.type === 'EDIT') {
+      const result = await editDoctor({ ...body }, props.id);
       if (result.status === 200) {
-        form.resetFields();
-        history.push('/doctor');
+        props.onDone();
       }
+    } else {
+    const result = await createAssigment(body);
+    if (result.status === 200) {
+      form.resetFields();
+      history.push('/doctor');
+      props.onDone();
+    }
     //   if (props.type === 'CREATE-CLINIC') {
     //     props.onDone(result.data.id);
     //   }
-    // }
+    }
 
     setLoading(false);
   };
@@ -190,24 +195,83 @@ const CreateDoctorForm = (props) => {
     async function fetchData() {
       if (props.id) {
         setLoadingPage(true);
-        const dataEdit = await getDoctor(props.id);
-        const newDataEdit = { ...dataEdit.data };
-        const dataService = newDataEdit.doctor_service.map((item) => {
-          return item.category_service?.id;
-        });
+        const dataEdit = await getAssign(props.id);
+        const dataForm = { ...dataEdit.data };
 
-        const dataImage = newDataEdit.image.map((item) => {
-          return {
-            link: item.link,
-            image_type: item.image_type,
-          };
-        });
+        console.log('dataForm', dataForm);
+
+        const typeTasks = dataForm.task.map((item) => item.taskType);
+        const taskListening = dataForm.task.find((item) => item.taskType === 'LISTENING');
+        const taskReading = dataForm.task.find((item) => item.taskType === 'READING');
+
+        console.log('taskListening', taskListening);
+        console.log('taskReading', taskReading);
 
         form.setFieldsValue({
-          ...newDataEdit,
-          doctor_service: dataService,
-          avatar: dataImage.find((item) => item.image_type === 'AVATAR').link,
+          name: dataForm.nameAssignment,
+          status: dataForm.isActive,
+          type_assign: dataForm.assignmentType,
+          course_location: dataForm.section
+            ? [dataForm.course.id, dataForm.section.id]
+            : [dataForm.course.id],
+          'type-exam': typeTasks,
+          audio: [
+            {
+              fileId: taskListening?.file[0].id,
+              name: 'Âm thanh',
+              url: taskListening?.file[0].url,
+            },
+          ],
+          listening_question: taskListening?.question?.map((item) => {
+            return {
+              id: item.id,
+              questionType: item.questionType,
+              title: item.title,
+              answer: item.answer.map((itemAws) => {
+                return {
+                  title: itemAws.content,
+                  id: itemAws.id,
+                  is_correct: itemAws.isCorrect,
+                };
+              }),
+            };
+          }),
+          reading_content: taskReading?.content,
+          reading_question: taskReading?.question?.map((item) => {
+            return {
+              id: item.id,
+              questionType: item.questionType,
+              title: item.title,
+              answer: item.answer.map((itemAws) => {
+                return {
+                  title: itemAws.content,
+                  id: itemAws.id,
+                  is_correct: itemAws.isCorrect,
+                };
+              }),
+            };
+          }),
         });
+
+        // const body = {
+        //   name: fieldsValue.name,
+        //   status: fieldsValue.status,
+        //   exam_type: fieldsValue.type_assign,
+        //   course_id: fieldsValue.course_location[0],
+        //   section_id: fieldsValue.course_location[1] || null,
+        //   task: [],
+        // };
+
+        // const dataService = newDataEdit.doctor_service.map((item) => {
+        //   return item.category_service?.id;
+        // });
+
+        // const dataImage = newDataEdit.image.map((item) => {
+        //   return {
+        //     link: item.link,
+        //     image_type: item.image_type,
+        //   };
+        // });
 
         setLoadingPage(false);
       }
@@ -274,6 +338,7 @@ const CreateDoctorForm = (props) => {
             >
               <Select
                 placeholder="Chọn loại Assignments"
+                disabled={props.type==="EDIT" ? true : false}
                 onChange={(e) => {
                   setTypeAssign(e);
                   if (e == 'TESTS') form.setFieldValue('type-exam', ['LISTENING', 'READING']);
@@ -306,7 +371,7 @@ const CreateDoctorForm = (props) => {
               <Select
                 placeholder="Chọn loại bài"
                 mode="multiple"
-                disabled={typeAssign === 'TESTS' ? true : false}
+                disabled={typeAssign === 'TESTS' || props.type==="EDIT" ? true : false}
                 onChange={(e) => {
                   setRenderTypeExam(e);
                 }}
@@ -338,7 +403,7 @@ const CreateDoctorForm = (props) => {
               <Cascader
                 options={courseOptions}
                 placeholder="Chọn khóa học"
-                disabled={typeAssign == null ? true : false}
+                disabled={typeAssign == null || props.type==="EDIT" ? true : false}
               />
             </FormItem>
           </Col>
@@ -432,7 +497,7 @@ const CreateDoctorForm = (props) => {
                               <div className="header-card">
                                 <span>Câu hỏi {field.name + 1}</span>
                                 <FormItem
-                                  name={[field.name, 'question_type']}
+                                  name={[field.name, 'questionType']}
                                   rules={[
                                     {
                                       required: true,
@@ -443,6 +508,7 @@ const CreateDoctorForm = (props) => {
                                 >
                                   <Select
                                     // defaultValue={'SIMPLE_CHOICE'}
+                                    disabled={props.type==="EDIT"}
                                     placeholder="Chọn loại câu hỏi"
                                     onChange={(e) => {
                                       // setTypeAssign(e);
@@ -619,24 +685,57 @@ const CreateDoctorForm = (props) => {
                   rules={[
                     {
                       required: true,
-                      message: 'Bạn chưa chọn khóa học',
+                      message: 'Bạn chưa điền nội dung',
                     },
                   ]}
                 >
-                  <SunEditor
-                    getSunEditorInstance={getSunEditorInstance}
-                    setOptions={{
-                      height: 250,
-                      buttonList: [
-                        ['undo', 'redo'],
-                        ['font', 'fontSize', 'formatBlock'],
-                        ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
-                        ['bold', 'underline', 'italic', 'strike'],
-                        ['fontColor', 'hiliteColor'],
-                        ['align', 'list'],
-                      ],
-                    }}
-                  />
+                  {/* <Input></Input> */}
+                  {props.type === 'EDIT' ? (
+                    <ReactQuill
+                      theme="snow"
+                      modules={{
+                        toolbar: [
+                          [{ header: [1, 2, false] }],
+                          ['bold', 'italic', 'underline', 'strike'],
+                          [
+                            { list: 'ordered' },
+                            { list: 'bullet' },
+                            { indent: '-1' },
+                            { indent: '+1' },
+                          ],
+                          [{ color: [] }, { background: [] }],
+                          ['clean'],
+                        ],
+                      }}
+                      formats={[
+                        'header',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strike',
+                        'list',
+                        'bullet',
+                        'indent',
+
+                        'color',
+                        'background',
+                      ]}
+                    />
+                  ) : (
+                    <SunEditor
+                      getSunEditorInstance={getSunEditorInstance}
+                      setOptions={{
+                        height: 250,
+                        buttonList: [
+                          ['formatBlock'],
+                          ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
+                          ['bold', 'underline', 'italic', 'strike'],
+                          ['fontColor', 'hiliteColor'],
+                          ['align', 'list'],
+                        ],
+                      }}
+                    />
+                  )}
                 </FormItem>
               </Col>
               <Col span={24} style={{ marginBottom: 15 }} className="question-card">
@@ -651,7 +750,7 @@ const CreateDoctorForm = (props) => {
                               <div className="header-card">
                                 <span>Question {field.name + 1}</span>
                                 <FormItem
-                                  name={[field.name, 'question_type']}
+                                  name={[field.name, 'questionType']}
                                   rules={[
                                     {
                                       required: true,
@@ -662,6 +761,7 @@ const CreateDoctorForm = (props) => {
                                 >
                                   <Select
                                     // defaultValue={'SIMPLE_CHOICE'}
+                                    disabled={props.type==="EDIT"}
                                     placeholder="Chọn loại câu hỏi"
                                     onChange={(e) => {
                                       // setTypeAssign(e);

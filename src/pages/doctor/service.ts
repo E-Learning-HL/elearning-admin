@@ -4,11 +4,11 @@ import { DEV_API_HOST } from '@/const/const';
 import { request } from '@umijs/max';
 import { message } from 'antd';
 
-export async function getListDoctor(
+export async function getListAssign(
   params: {
     current?: number;
     pageSize?: number;
-    name?: string;
+    nameAssignment?: string;
   },
   options?: { [key: string]: any },
 ) {
@@ -16,9 +16,9 @@ export async function getListDoctor(
   let newParams = {
     page: params.current,
     limit: params.pageSize,
-    name: params.name,
+    search: params.nameAssignment,
   };
-  const result = await request(`${DEV_API_HOST}/admin/doctor`, {
+  const result = await request(`${DEV_API_HOST}/api/assignments/get-list-assignments`, {
     method: 'GET',
     params: {
       ...newParams,
@@ -30,6 +30,15 @@ export async function getListDoctor(
     data: result.data,
     success: true,
     total: result.total,
+  };
+}
+
+export async function getAssign(id: number) {
+  const result = await request(`${DEV_API_HOST}/api/assignments/${id}`, {
+    method: 'GET',
+  });
+  return {
+    data: result,
   };
 }
 
@@ -62,6 +71,54 @@ export async function createAssigment(body: any){
   } catch (error) {
     return false;
   }
+}
+
+export async function editAssigment(body: any, id: number) {
+  try {
+    let res = await request(`${DEV_API_HOST}/api/assignments/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthority()}`,
+      },
+      data: { ...body },
+    });
+    if (res?.status === 200) {
+      message.success('Thành công');
+    }
+    return res;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function getListDoctor(
+  params: {
+    current?: number;
+    pageSize?: number;
+    name?: string;
+  },
+  options?: { [key: string]: any },
+) {
+  console.log('params', params);
+  let newParams = {
+    page: params.current,
+    limit: params.pageSize,
+    name: params.name,
+  };
+  const result = await request(`${DEV_API_HOST}/admin/doctor`, {
+    method: 'GET',
+    params: {
+      ...newParams,
+    },
+    ...(options || {}),
+  });
+  console.log('result', result);
+  return {
+    data: result.data,
+    success: true,
+    total: result.total,
+  };
 }
 
 export async function removeDoctor(id: number) {
