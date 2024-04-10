@@ -24,7 +24,7 @@ import {
 } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
-import { createDoctor, editDoctor, getAssign, getListCourse, createAssigment } from '../service';
+import { createDoctor, editAssigment, getAssign, getListCourse, createAssigment } from '../service';
 import './index.less';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
@@ -60,6 +60,8 @@ const CreateDoctorForm = (props) => {
   const [courseOptions, setCourseOptions] = useState(null);
   const [typeListeningQuestion, setTypeListeningQuestion] = useState([]);
   const [typeReadingQuestion, setTypeReadingQuestion] = useState([]);
+  const [taskListeningId, setTaskListeningId] = useState(null);
+  const [taskReadingId, setTaskReadingId] = useState(null);
   // const [triggerContent, setTriggerContent] = useState(null);
   // const [key, setKey] = useState(0);
 
@@ -135,7 +137,7 @@ const CreateDoctorForm = (props) => {
       return false;
     }
   };
-  const onFinish = async () => {
+  const onFinish = async (values) => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
     // const newImage = [{ link: fieldsValue.avatar, image_type: 'AVATAR' }];
@@ -148,30 +150,51 @@ const CreateDoctorForm = (props) => {
       sectionId: fieldsValue.course_location[1] || null,
       task: [],
     };
+    
 
     if (fieldsValue.audio && fieldsValue.listening_question) {
-      body.task.push({
-        audio: fieldsValue.audio,
-        taskType: 'LISTENING',
-        question: fieldsValue.listening_question,
-      });
+      if(props.type === "EDIT"){
+        body.task.push({
+          audio: fieldsValue.audio,
+          taskType: 'LISTENING',
+          question: fieldsValue.listening_question,
+          taskId: taskListeningId
+        });
+      }else{
+        body.task.push({
+          audio: fieldsValue.audio,
+          taskType: 'LISTENING',
+          question: fieldsValue.listening_question,
+        });
+      }
     }
 
     if (fieldsValue.reading_content && fieldsValue.reading_question) {
+      if(props.type === "EDIT"){
+        body.task.push({
+          content: fieldsValue.reading_content,
+          taskType: 'READING',
+          question: fieldsValue.reading_question,
+          taskId: taskReadingId
+        });
+      }else{
       body.task.push({
         content: fieldsValue.reading_content,
         taskType: 'READING',
         question: fieldsValue.reading_question,
       });
     }
+    }
+
     // console.log('fieldsValue', fieldsValue);
     console.log('bodydyyyy', body);
 
     if (props.type === 'EDIT') {
-      const result = await editDoctor({ ...body }, props.id);
+      const result = await editAssigment({ ...body }, props.id);
       if (result.status === 200) {
         props.onDone();
       }
+      console.log("body", body)
     } else {
     const result = await createAssigment(body);
     if (result.status === 200) {
@@ -198,14 +221,12 @@ const CreateDoctorForm = (props) => {
         const dataEdit = await getAssign(props.id);
         const dataForm = { ...dataEdit.data };
 
-        console.log('dataForm', dataForm);
-
         const typeTasks = dataForm.task.map((item) => item.taskType);
         const taskListening = dataForm.task.find((item) => item.taskType === 'LISTENING');
         const taskReading = dataForm.task.find((item) => item.taskType === 'READING');
 
-        console.log('taskListening', taskListening);
-        console.log('taskReading', taskReading);
+        setTaskListeningId(taskListening?.id)
+        setTaskReadingId(taskReading?.id)
 
         form.setFieldsValue({
           name: dataForm.nameAssignment,
