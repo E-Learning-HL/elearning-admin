@@ -537,7 +537,7 @@ const Clinic = () => {
         width={1000}
         footer={null}
         style={{ top: 20 }}
-        destroyOnClose
+        destroyOnClose={true}
         // motion={0}
       >
         <CreateClinicForm

@@ -244,6 +244,7 @@ const Doctor = () => {
         width={1000}
         footer={null}
         style={{ top: 20 }}
+        destroyOnClose={true}
       >
         <CreateDoctorForm
           type={FORM_TYPE.EDIT}

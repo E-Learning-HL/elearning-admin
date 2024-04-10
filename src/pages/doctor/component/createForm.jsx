@@ -238,9 +238,9 @@ const CreateDoctorForm = (props) => {
           'type-exam': typeTasks,
           audio: [
             {
-              fileId: taskListening?.file[0].id,
+              fileId: taskListening?.file[0]?.id,
               name: 'Âm thanh',
-              url: taskListening?.file[0].url,
+              url: taskListening?.file[0]?.url,
             },
           ],
           listening_question: taskListening?.question?.map((item) => {
@@ -252,7 +252,7 @@ const CreateDoctorForm = (props) => {
                 return {
                   title: itemAws.content,
                   answerId: itemAws.id,
-                  is_correct: itemAws.isCorrect,
+                  isCorrect: itemAws.isCorrect,
                 };
               }),
             };
@@ -267,7 +267,7 @@ const CreateDoctorForm = (props) => {
                 return {
                   title: itemAws.content,
                   answerId: itemAws.id,
-                  is_correct: itemAws.isCorrect,
+                  isCorrect: itemAws.isCorrect,
                 };
               }),
             };
@@ -653,7 +653,7 @@ const CreateDoctorForm = (props) => {
                                             </FormItem>
                                           )} */}
                                           <FormItem
-                                            name={[subField.name, 'is_correct']}
+                                            name={[subField.name, 'isCorrect']}
                                             valuePropName="checked"
                                             initialValue={false}
                                           >
@@ -882,7 +882,7 @@ const CreateDoctorForm = (props) => {
                                         </Col>
                                         <Col className="check-box">
                                           <FormItem
-                                            name={[subField.name, 'is_correct']}
+                                            name={[subField.name, 'isCorrect']}
                                             valuePropName="checked"
                                             initialValue={false}
                                           >
