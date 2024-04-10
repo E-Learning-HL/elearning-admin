@@ -150,17 +150,16 @@ const CreateDoctorForm = (props) => {
       sectionId: fieldsValue.course_location[1] || null,
       task: [],
     };
-    
 
     if (fieldsValue.audio && fieldsValue.listening_question) {
-      if(props.type === "EDIT"){
+      if (props.type === 'EDIT') {
         body.task.push({
           audio: fieldsValue.audio,
           taskType: 'LISTENING',
           question: fieldsValue.listening_question,
-          taskId: taskListeningId
+          taskId: taskListeningId,
         });
-      }else{
+      } else {
         body.task.push({
           audio: fieldsValue.audio,
           taskType: 'LISTENING',
@@ -170,20 +169,20 @@ const CreateDoctorForm = (props) => {
     }
 
     if (fieldsValue.reading_content && fieldsValue.reading_question) {
-      if(props.type === "EDIT"){
+      if (props.type === 'EDIT') {
         body.task.push({
           content: fieldsValue.reading_content,
           taskType: 'READING',
           question: fieldsValue.reading_question,
-          taskId: taskReadingId
+          taskId: taskReadingId,
         });
-      }else{
-      body.task.push({
-        content: fieldsValue.reading_content,
-        taskType: 'READING',
-        question: fieldsValue.reading_question,
-      });
-    }
+      } else {
+        body.task.push({
+          content: fieldsValue.reading_content,
+          taskType: 'READING',
+          question: fieldsValue.reading_question,
+        });
+      }
     }
 
     // console.log('fieldsValue', fieldsValue);
@@ -194,17 +193,16 @@ const CreateDoctorForm = (props) => {
       if (result.status === 200) {
         props.onDone();
       }
-      console.log("body", body)
+      console.log('body', body);
     } else {
-    const result = await createAssigment(body);
-    if (result.status === 200) {
-      form.resetFields();
-      history.push('/doctor');
-      props.onDone();
-    }
-    //   if (props.type === 'CREATE-CLINIC') {
-    //     props.onDone(result.data.id);
-    //   }
+      const result = await createAssigment(body);
+      if (result.status === 200) {
+        form.resetFields();
+        history.push('/doctor');
+      }
+      //   if (props.type === 'CREATE-CLINIC') {
+      //     props.onDone(result.data.id);
+      //   }
     }
 
     setLoading(false);
@@ -225,8 +223,8 @@ const CreateDoctorForm = (props) => {
         const taskListening = dataForm.task.find((item) => item.taskType === 'LISTENING');
         const taskReading = dataForm.task.find((item) => item.taskType === 'READING');
 
-        setTaskListeningId(taskListening?.id)
-        setTaskReadingId(taskReading?.id)
+        setTaskListeningId(taskListening?.id);
+        setTaskReadingId(taskReading?.id);
 
         form.setFieldsValue({
           name: dataForm.nameAssignment,
@@ -359,7 +357,7 @@ const CreateDoctorForm = (props) => {
             >
               <Select
                 placeholder="Chọn loại Assignments"
-                disabled={props.type==="EDIT" ? true : false}
+                disabled={props.type === 'EDIT' ? true : false}
                 onChange={(e) => {
                   setTypeAssign(e);
                   if (e == 'TESTS') form.setFieldValue('type-exam', ['LISTENING', 'READING']);
@@ -392,7 +390,7 @@ const CreateDoctorForm = (props) => {
               <Select
                 placeholder="Chọn loại bài"
                 mode="multiple"
-                disabled={typeAssign === 'TESTS' || props.type==="EDIT" ? true : false}
+                disabled={typeAssign === 'TESTS' || props.type === 'EDIT' ? true : false}
                 onChange={(e) => {
                   setRenderTypeExam(e);
                 }}
@@ -424,7 +422,7 @@ const CreateDoctorForm = (props) => {
               <Cascader
                 options={courseOptions}
                 placeholder="Chọn khóa học"
-                disabled={typeAssign == null || props.type==="EDIT" ? true : false}
+                disabled={typeAssign == null || props.type === 'EDIT' ? true : false}
               />
             </FormItem>
           </Col>
@@ -529,7 +527,7 @@ const CreateDoctorForm = (props) => {
                                 >
                                   <Select
                                     // defaultValue={'SIMPLE_CHOICE'}
-                                    disabled={props.type==="EDIT"}
+                                    // disabled={props.type === 'EDIT'}
                                     placeholder="Chọn loại câu hỏi"
                                     onChange={(e) => {
                                       // setTypeAssign(e);
@@ -711,52 +709,36 @@ const CreateDoctorForm = (props) => {
                   ]}
                 >
                   {/* <Input></Input> */}
-                  {props.type === 'EDIT' ? (
-                    <ReactQuill
-                      theme="snow"
-                      modules={{
-                        toolbar: [
-                          [{ header: [1, 2, false] }],
-                          ['bold', 'italic', 'underline', 'strike'],
-                          [
-                            { list: 'ordered' },
-                            { list: 'bullet' },
-                            { indent: '-1' },
-                            { indent: '+1' },
-                          ],
-                          [{ color: [] }, { background: [] }],
-                          ['clean'],
+                  <ReactQuill
+                    theme="snow"
+                    modules={{
+                      toolbar: [
+                        [{ header: [1, 2, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [
+                          { list: 'ordered' },
+                          { list: 'bullet' },
+                          { indent: '-1' },
+                          { indent: '+1' },
                         ],
-                      }}
-                      formats={[
-                        'header',
-                        'bold',
-                        'italic',
-                        'underline',
-                        'strike',
-                        'list',
-                        'bullet',
-                        'indent',
+                        [{ color: [] }, { background: [] }],
+                        ['clean'],
+                      ],
+                    }}
+                    formats={[
+                      'header',
+                      'bold',
+                      'italic',
+                      'underline',
+                      'strike',
+                      'list',
+                      'bullet',
+                      'indent',
 
-                        'color',
-                        'background',
-                      ]}
-                    />
-                  ) : (
-                    <SunEditor
-                      getSunEditorInstance={getSunEditorInstance}
-                      setOptions={{
-                        height: 250,
-                        buttonList: [
-                          ['formatBlock'],
-                          ['table', 'link', 'image', 'video'], // Thêm nút bảng vào thanh công cụ
-                          ['bold', 'underline', 'italic', 'strike'],
-                          ['fontColor', 'hiliteColor'],
-                          ['align', 'list'],
-                        ],
-                      }}
-                    />
-                  )}
+                      'color',
+                      'background',
+                    ]}
+                  />
                 </FormItem>
               </Col>
               <Col span={24} style={{ marginBottom: 15 }} className="question-card">
@@ -782,7 +764,7 @@ const CreateDoctorForm = (props) => {
                                 >
                                   <Select
                                     // defaultValue={'SIMPLE_CHOICE'}
-                                    disabled={props.type==="EDIT"}
+                                    // disabled={props.type === 'EDIT'}
                                     placeholder="Chọn loại câu hỏi"
                                     onChange={(e) => {
                                       // setTypeAssign(e);

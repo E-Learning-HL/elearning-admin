@@ -62,7 +62,7 @@ export async function getDataCourse(id: number){
 }
 export async function updateCourse(body: any, id: number){
   const result = await request(`${DEV_API_HOST}/api/courses/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: {...body}
   });
   return {
