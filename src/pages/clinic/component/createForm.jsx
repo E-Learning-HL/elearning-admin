@@ -482,7 +482,7 @@ const CreateClinicForm = (props) => {
               video: [
                 {
                   fileId: itemLesson?.file[0]?.id,
-                  name: 'Video',
+                  name: itemLesson?.file[0]?.name,
                   url: itemLesson?.file[0]?.url,
                 },
               ],
@@ -494,42 +494,6 @@ const CreateClinicForm = (props) => {
             lessons: lessons,
           };
         }),
-        // category_service_clinic: dataCategoryServiceClinic,
-        // tag: dataTag,
-        // // logo: dataImage.find((item) => item.image_type === 'AVATAR')?.link,
-        // logo: dataLogo
-        //   ? [
-        //     {
-        //       uid: dataLogo.id,
-        //       name: 'Hình ảnh',
-        //       status: 'done',
-        //       url: dataLogo?.link,
-        //     },
-        //   ]
-        //   : [],
-        // logoId: dataLogo?.id,
-        // cover: dataCover
-        //   ? [
-        //     {
-        //       uid: dataCover.id,
-        //       name: 'Hình ảnh',
-        //       status: 'done',
-        //       url: dataCover?.link,
-        //     },
-        //   ]
-        //   : [],
-        // coverId: dataCover?.id,
-        // image_introduce: dataImageIntroduce
-        //   ? dataImageIntroduce.map((item) => {
-        //     return {
-        //       uid: item.id,
-        //       name: 'Hình ảnh',
-        //       status: 'done',
-        //       url: item?.link,
-        //     };
-        //   })
-        //   : [],
-        // doctor: dataDoctor,
       });
   }, [dataFormCourse]);
 
@@ -1422,7 +1386,7 @@ const CreateClinicForm = (props) => {
           >
             {loading && <LoadingOutlined />}
             {!loading && props.type !== 'EDIT' && <PlusSquareOutlined style={{ marginRight: 5 }} />}
-            {props.type !== 'EDIT' ? <div>Tạo khóa học</div> : 'Sửa Phòng khám'}
+            {props.type !== 'EDIT' ? <div>Tạo khóa học</div> : 'Sửa khóa học'}
           </Button>
         </FormItem>
       </div>
@@ -1443,14 +1407,15 @@ const CreateClinicForm = (props) => {
 
     if (props.type === 'EDIT') {
       const result = await updateCourse(fieldsValue, props.id);
-      if (result.status === 200) {
+      console.log(result)
+      if (result.data.status === 200) {
         props.onDone();
       }
     } else {
       const result = await createCourse(fieldsValue);
       if (result.status === 200) {
         form.resetFields();
-        history.push('/clinic');
+        history.push('/course');
       }
     }
 

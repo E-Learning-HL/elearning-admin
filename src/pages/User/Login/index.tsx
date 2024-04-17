@@ -47,7 +47,6 @@ const Login: React.FC = () => {
 
   const fetchUserInfo = async (id: number) => {
     const userInfo = await currentUser(id);
-
     // const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       flushSync(() => {
@@ -74,10 +73,10 @@ const Login: React.FC = () => {
           id: 'pages.login.success',
           defaultMessage: 'Đăng nhập thành công',
         });
-        message.success(defaultLoginSuccessMessage);
 
         await fetchUserInfo(msg?.data?.userId);
         const urlParams = new URL(window.location.href).searchParams;
+        message.success(defaultLoginSuccessMessage);
         history.push(urlParams.get('redirect') || '/');
         return;
       }
@@ -86,7 +85,7 @@ const Login: React.FC = () => {
         id: 'pages.login.failure',
         defaultMessage: 'Đăng nhập thất bại',
       });
-      message.error(defaultLoginFailureMessage);
+      // message.error(defaultLoginFailureMessage);
     }
   };
   const { status, type: loginType } = userLoginState;

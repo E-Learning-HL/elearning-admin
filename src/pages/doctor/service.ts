@@ -23,6 +23,10 @@ export async function getListAssign(
     params: {
       ...newParams,
     },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
     ...(options || {}),
   });
   console.log('result', result);
@@ -36,6 +40,10 @@ export async function getListAssign(
 export async function getAssign(id: number) {
   const result = await request(`${DEV_API_HOST}/api/assignments/${id}`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
   });
   return {
     data: result,
@@ -48,6 +56,10 @@ export async function getListCourse() {
     params: {
       limit: 100
     },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
   });
   return {
     data: result.data,
@@ -58,10 +70,10 @@ export async function createAssigment(body: any){
   try {
     let res = await request(`${DEV_API_HOST}/api/assignments/create-assignment`, {
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   Authorization: `Bearer ${getAuthority()}`,
-      // },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthority()}`,
+      },
       data: { ...body },
     });
     if (res?.status === 200) {
@@ -91,6 +103,26 @@ export async function editAssigment(body: any, id: number) {
     return false;
   }
 }
+export async function deleteAssigment(id: number) {
+  try {
+    let res = await request(`${DEV_API_HOST}/api/assignments/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthority()}`,
+      },
+      // data: { ...body },
+    });
+    // if (res?.status === 200) {
+    //   message.success('Thành công');
+    // }
+    return res;
+  } catch (error) {
+    return false;
+  }
+}
+
+
 
 export async function getListDoctor(
   params: {

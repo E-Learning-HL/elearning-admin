@@ -6,7 +6,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(id: number) {
-  return request(`${DEV_API_HOST}/api/users/${id}`, {
+  return request(`${DEV_API_HOST}/api/users/admin/user/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

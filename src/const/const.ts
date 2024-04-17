@@ -109,3 +109,16 @@ export const IMAGE_TYPE = {
   banner: 'BANNER',
   introduce: 'INTRODUCE',
 };
+
+export const SUPER_ADMIN = ["COURSE_show_in_admin", "COURSE_create", "ORDER_show_in_admin", "ASSIGNMENTS_show_in_admin", "ASSIGNMENTS_create", "USER_show_in_admin"]
+export const ADMIN = ["COURSE_show_in_admin", "COURSE_create", "ASSIGNMENTS_show_in_admin", "ASSIGNMENTS_create"]
+
+export const MAP_ACCESS = new Map([
+  ['COURSE_create', '/course/create'],
+  ['COURSE_show_in_admin', '/course'],
+  ['ASSIGNMENTS_create', '/assignment/create'],
+  ['ASSIGNMENTS_show_in_admin', '/assignment'],
+  ['USER_show_in_admin', '/user_management'],
+  ['ORDER_show_in_admin', '/order'],
+  
+]);

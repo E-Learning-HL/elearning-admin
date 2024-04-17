@@ -10,10 +10,10 @@ export async function createCourse(body: any) {
 
     let res = await request(`${DEV_API_HOST}/api/courses/create-courses`, {
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   Authorization: `Bearer ${getAuthority()}`,
-      // },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthority()}`,
+      },
       data: { ...body },
     });
     if (res?.status === 200) {
@@ -43,6 +43,10 @@ export async function getListCourse(
     params: {
       ...newParams,
     },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
     ...(options || {}),
   });
   return {
@@ -54,7 +58,11 @@ export async function getListCourse(
 
 export async function getDataCourse(id: number){
   const result = await request(`${DEV_API_HOST}/api/courses/${id}`, {
-    method: 'GET'
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
   });
   return {
     data: result,
@@ -63,6 +71,10 @@ export async function getDataCourse(id: number){
 export async function updateCourse(body: any, id: number){
   const result = await request(`${DEV_API_HOST}/api/courses/${id}`, {
     method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
     data: {...body}
   });
   return {
@@ -70,6 +82,19 @@ export async function updateCourse(body: any, id: number){
   };
 }
 
+export async function deleteCourse(id: number){
+  const result = await request(`${DEV_API_HOST}/api/courses/${id}`, {
+    method: 'DELELTE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
+    // data: {...body}
+  });
+  return {
+    data: result,
+  };
+}
 
 
 export async function getListClinic(
@@ -98,9 +123,7 @@ export async function getListClinic(
     total: result.total,
   };
 }
-export async function removeClinic(id: number) {
-  return remove(`admin/clinic/${id}`);
-}
+
 export async function getClinic(id: number) {
   const result = await request(`${DEV_API_HOST}/admin/clinic/${id}`, {
     method: 'GET',

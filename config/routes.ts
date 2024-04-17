@@ -54,17 +54,19 @@ export default [
   {
     name: 'Khóa học',
     icon: `/image/icons8-course.png`,
-    path: '/clinic',
+    path: '/course',
     // component: './clinic',
+    access: 'normalRouteFilter',
     routes: [
       {
-        path: '/clinic',
+        path: '/course',
         component: './clinic',
       },
       {
         name: 'Tạo Khóa Học',
-        path: '/clinic/create',
+        path: '/course/create',
         component: './clinic/create',
+        access: 'normalRouteFilter',
         hideInMenu: true,
       },
     ],
@@ -79,26 +81,30 @@ export default [
   {
     name: 'Order',
     icon: `/image/icons8-order.png`,
-    path: '/information_clinic',
+    path: '/order',
     component: './information_clinic',
+    access: 'normalRouteFilter',
   },
   {
     name: 'Tạo Thông tin liên hệ',
     path: '/information_clinic/create',
     component: './information_clinic/create',
+    access: 'normalRouteFilter',
     hideInMenu: true,
   },
   {
     name: 'Assignments',
     icon: `/image/icons8-exam.png`,
-    path: '/doctor',
+    path: '/assignment',
     component: './doctor',
+    access: 'normalRouteFilter',
   },
   {
     name: 'Tạo Assignments',
     icon: `/image/icons8-clinic.png`,
-    path: '/doctor/create',
+    path: '/assignment/create',
     component: './doctor/create',
+    access: 'normalRouteFilter',
     hideInMenu: true,
   },
   // {
@@ -115,7 +121,7 @@ export default [
   // },
   {
     path: '/',
-    redirect: '/clinic',
+    redirect: '/course',
   },
   {
     path: '*',
@@ -144,5 +150,6 @@ export default [
     icon: `/image/icons8-user.png`,
     path: '/user_management',
     component: './user_management',
+    access: 'normalRouteFilter',
   },
 ];

@@ -2,17 +2,17 @@ import './index.less';
 import React, { useRef, useState, useEffect } from 'react';
 
 import { PageContainer, ProTable, ProDescriptions } from '@ant-design/pro-components';
-import { Button, Tooltip, Drawer, Modal, ConfigProvider } from 'antd';
+import { Button, Tooltip, Drawer, Modal, ConfigProvider, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getListAssign, removeDoctor, getDoctor } from './service';
+import { getListAssign, deleteAssigment, getDoctor } from './service';
 import NProgress from 'nprogress';
 import { history, useLocation } from 'umi';
-import iconExperience from '../../assets/image/icon-shield-done.png'
+import iconExperience from '../../assets/image/icon-shield-done.png';
 import iconService from '../../assets/image/icon-service.png';
-import CreateDoctorForm from './component/createForm'
-import { FORM_TYPE } from '../../const/const'
+import CreateDoctorForm from './component/createForm';
+import { FORM_TYPE } from '../../const/const';
 import _ from 'lodash';
-import { Input } from 'antd'
+import { Input } from 'antd';
 import viVnIntl from 'antd/lib/locale/vi_VN';
 
 const Doctor = () => {
@@ -21,10 +21,10 @@ const Doctor = () => {
   const [currentRow, setCurrentRow] = useState(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [debouncing, setDebouncing] = useState(false);
-  const [loadingTable, setLoadingTable] = useState(false)
+  const [loadingTable, setLoadingTable] = useState(false);
   const onDelete = async (entity) => {
     NProgress.start();
-    let res = await removeDoctor(entity.id);
+    let res = await deleteAssigment(entity.id);
     if (res) {
       actionRef?.current.reload();
     }
@@ -114,11 +114,21 @@ const Doctor = () => {
               <EditOutlined />
             </div>
           </Tooltip>
-          <Tooltip title="Xóa">
-            <div className="wrapper-button-menu" onClick={() => onDelete(entity)}>
-              <DeleteOutlined />
-            </div>
-          </Tooltip>
+          <Popconfirm
+            title="Bạn có chắc chắn xóa không?"
+            placement="topRight"
+            onConfirm={() => {
+              onDelete(entity);
+            }}
+            okText="Ok"
+            cancelText="Hủy"
+          >
+            <Tooltip>
+              <div className="wrapper-button-menu">
+                <DeleteOutlined />
+              </div>
+            </Tooltip>
+          </Popconfirm>
         </div>
       ),
     },
@@ -179,7 +189,6 @@ const Doctor = () => {
     },
   ];
 
-
   return (
     <PageContainer>
       <ConfigProvider locale={viVnIntl}>
@@ -205,7 +214,7 @@ const Doctor = () => {
               type="primary"
               key="primary"
               onClick={() => {
-                history.push('/doctor/create');
+                history.push('/assignment/create');
               }}
             >
               <PlusOutlined /> Thêm Assignments

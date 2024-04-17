@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
-import { Button, Col, Drawer, Modal, Row, Select, Table, Tooltip, ConfigProvider } from 'antd';
+import { Button, Col, Drawer, Modal, Row, Select, Table, Tooltip, ConfigProvider, Popconfirm } from 'antd';
 import NProgress from 'nprogress';
 import { useEffect, useRef, useState } from 'react';
 import iconMarkBlue from '../../assets/image/icon-mark-blue.svg';
@@ -8,7 +8,7 @@ import iconMark from '../../assets/image/icon-mark.svg';
 import iconStar2 from '../../assets/image/icon-star-2.svg';
 import iconStar from '../../assets/image/icon-star.svg';
 import './index.less';
-import { getClinic, getListCourse, removeClinic } from './service';
+import { getClinic, getListCourse, deleteCourse } from './service';
 
 import iconCheck from '../../assets/image/icon-check.svg';
 
@@ -218,11 +218,21 @@ const Clinic = () => {
               <EditOutlined />
             </div>
           </Tooltip>
-          <Tooltip title="Xóa">
-            <div className="wrapper-button-menu" onClick={() => onDelete(entity)}>
-              <DeleteOutlined />
-            </div>
-          </Tooltip>
+          <Popconfirm
+            title="Bạn có chắc chắn xóa không?"
+            placement="topRight"
+            onConfirm={() => {
+              onDelete(entity);
+            }}
+            okText="Ok"
+            cancelText="Hủy"
+          >
+            <Tooltip >
+              <div className="wrapper-button-menu">
+                <DeleteOutlined />
+              </div>
+            </Tooltip>
+          </Popconfirm>
         </div>
       ),
     },
@@ -452,7 +462,7 @@ const Clinic = () => {
   ];
   const onDelete = async (entity) => {
     NProgress.start();
-    let res = await removeClinic(entity.id);
+    let res = await deleteCourse(entity.id);
     if (res) {
       actionRef?.current.reload();
     }
@@ -494,7 +504,7 @@ const Clinic = () => {
               type="primary"
               key="primary"
               onClick={() => {
-                history.push('/clinic/create');
+                history.push('/course/create');
               }}
             >
               <PlusOutlined /> Thêm khóa học
