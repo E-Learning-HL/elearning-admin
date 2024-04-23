@@ -9,23 +9,25 @@ export async function getListInformationClinic(
     current?: number;
     pageSize?: number;
     name?: string;
+    // role_id?: number;
   },
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
-  console.log('params', params);
-  let newParams = {
-    page: params.current,
-    limit: params.pageSize,
-    name: params.name,
-  };
-  const result = await request(`${DEV_API_HOST}/admin/information_clinic`, {
+  const result = await request(`${DEV_API_HOST}/api/payments/get-list`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
     params: {
-      ...newParams,
+      page: params?.current,
+      limit: params?.pageSize,
+      search: params?.name,
+      // role_id: params?.role_id
     },
     ...(options || {}),
   });
-  console.log('result', result);
+  console.log("123123", result.data)
   return {
     data: result.data,
     success: true,
@@ -34,8 +36,12 @@ export async function getListInformationClinic(
 }
 
 export async function getInformationClinic(id: number) {
-  const result = await request(`${DEV_API_HOST}/admin/information_clinic/${id}`, {
+  const result = await request(`${DEV_API_HOST}/api/payments/{id}/${id}`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthority()}`,
+    },
   });
   return {
     data: result,

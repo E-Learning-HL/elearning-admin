@@ -19,7 +19,11 @@ const CategoryService = () => {
   const [currentRow, setCurrentRow] = useState(null);
   const [debouncing, setDebouncing] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
-  const [listRole, setListRole] = useState(null);
+  const listRole = ['SUPER_ADMIN', 'ADMIN', 'USER'];
+  const status = {
+    true: 'TRUE',
+    false: 'FALSE',
+  };
   const onDelete = async (entity) => {
     NProgress.start();
     let res = await removeService(entity.id);
@@ -40,7 +44,6 @@ const CategoryService = () => {
     };
     fetchData();
   }, []);
-
 
   const columns = [
     {
@@ -73,6 +76,7 @@ const CategoryService = () => {
 
         return (
           <Input
+            style={{ width: '100%' }}
             placeholder="Nhập tên user"
             onChange={(event) => {
               event.persist();
@@ -98,6 +102,7 @@ const CategoryService = () => {
     {
       title: 'Email',
       dataIndex: 'email',
+      width: 350,
       // hideInSearch: true,
       render: (dom, entity) => {
         return (
@@ -147,67 +152,126 @@ const CategoryService = () => {
       //   );
       // },
     },
-    // {
-    //   title: 'Role',
-    //   dataIndex: 'role_id',
-    //   // hideInSearch: true,
-    //   render: (dom, entity) => {
-    //     return (
-    //       <div className="wrapper-first-column">
-    //         <div className="wrapper-info">
-    //           <a
-    //             // onClick={() => {
-    //             //   history.push(`/category-service?id=${entity?.id}`);
-    //             //   setCurrentRow(entity);
-    //             //   setShowDetail(true);
-    //             // }}
-    //             className="category-service-name"
-    //           >
-    //             {entity?.role?.name}
-    //           </a>
-    //         </div>
-    //       </div>
-    //     );
-    //   },
-    //   renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
-    //     const debounceOnChangeInput = _.debounce((event) => {
-    //       form.submit();
-    //       setDebouncing(false);
-    //     }, 900);
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      width: 150,
+      // hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <div className="wrapper-first-column">
+            <div className="wrapper-info">
+              <a
+                // onClick={() => {
+                //   history.push(`/category-service?id=${entity?.id}`);
+                //   setCurrentRow(entity);
+                //   setShowDetail(true);
+                // }}
+                className="category-service-name"
+              >
+                {dom}
+              </a>
+            </div>
+          </div>
+        );
+      },
+      renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
+        const debounceOnChangeInput = _.debounce((event) => {
+          form.submit();
+          setDebouncing(false);
+        }, 900);
 
-    //     return (
-    //       <Select
-    //         className="select-form-contact"
-    //         style={{ width: '100%' }}
-    //         // filterOption={filterOption}
-    //         placeholder="Chọn role"
-    //         allowClear
-    //         onChange={(event) => {
-    //           form.setFieldsValue({ role_id: event });
-    //           setLoadingTable(true);
-    //           if (!debouncing) {
-    //             setDebouncing(true);
-    //             if (event !== '') {
-    //               debounceOnChangeInput(event);
-    //             } else {
-    //               form.submit();
-    //               setDebouncing(false);
-    //             }
-    //           }
-    //         }}
-    //       >
-    //         {listRole?.data &&
-    //           listRole?.data?.map((item) => {
-    //             return (
-    //               <Option key={item.id} value={item.id}>
-    //                 {item.name}
-    //               </Option>
-    //             );
-    //           })}
-    //       </Select>
-    //     );
-    //   },
-    // },
+        return (
+          <Select
+            className="select-form-contact"
+            style={{ width: '100%' }}
+            // filterOption={filterOption}
+            placeholder="Chọn role"
+            allowClear
+            onChange={(event) => {
+              form.setFieldsValue({ role: event });
+              setLoadingTable(true);
+              if (!debouncing) {
+                setDebouncing(true);
+                if (event !== '') {
+                  debounceOnChangeInput(event);
+                } else {
+                  form.submit();
+                  setDebouncing(false);
+                }
+              }
+            }}
+          >
+            {listRole.map((item) => {
+              return (
+                <Option key={item} value={item}>
+                  {item}
+                </Option>
+              );
+            })}
+          </Select>
+        );
+      },
+    },
+    {
+      title: 'Active',
+      dataIndex: 'isActive',
+      render: (dom, entity) => {
+        return (
+          <div className="wrapper-first-column">
+            <div className="wrapper-info">
+              <a
+                // onClick={() => {
+                //   history.push(`/category-service?id=${entity?.id}`);
+                //   setCurrentRow(entity);
+                //   setShowDetail(true);
+                // }}
+                className="category-service-name"
+              >
+                {status[dom]}
+              </a>
+            </div>
+          </div>
+        );
+      },
+      renderFormItem: (item, { type, defaultRender, fieldProps, ...rest }, form) => {
+        const debounceOnChangeInput = _.debounce((event) => {
+          form.submit();
+          setDebouncing(false);
+        }, 900);
+
+        return (
+          <Select
+            className="select-form-contact"
+            style={{ width: '100%' }}
+            // filterOption={filterOption}
+            placeholder="Active"
+            allowClear
+            onChange={(event) => {
+              form.setFieldsValue({ isActive: event });
+              setLoadingTable(true);
+              if (!debouncing) {
+                setDebouncing(true);
+                if (event !== '') {
+                  debounceOnChangeInput(event);
+                } else {
+                  form.submit();
+                  setDebouncing(false);
+                }
+              }
+            }}
+          >
+            {[true, false].map((item) => {
+              return (
+                <Option key={item} value={item}>
+                  {item}
+                </Option>
+              );
+            })}
+          </Select>
+        );
+      },
+    },
     {
       title: 'Điều khiển',
       dataIndex: 'option',
@@ -216,37 +280,35 @@ const CategoryService = () => {
       align: 'center',
       width: 120,
 
-      render: (_, entity) => 
-      {
-        return(
+      render: (_, entity) => {
+        return (
           <div className="wrapper-operator">
-          <Tooltip title="Chỉnh sửa">
-            <div
-              className="wrapper-button-menu"
-              onClick={async () => {
-                setTypeModal('EDIT');
-                setCurrentRow({ role_id: entity.role.id,
-                                name: entity.name, id: entity.id,
-                                email: entity.email,
-                                role_name: entity.role.name,
-                                clinics: entity.clinics
-                              });
-                setEditModalVisible(true);
-              }}
-            >
-              <EditOutlined />
-            </div>
-          </Tooltip>
-          {/* <Tooltip title="Xóa">
+            <Tooltip title="Chỉnh sửa">
+              <div
+                className="wrapper-button-menu"
+                onClick={async () => {
+                  setTypeModal('EDIT');
+                  setCurrentRow({
+                    name: entity.name,
+                    id: entity.id,
+                    email: entity.email,
+                    role: entity.role,
+                    active: entity.isActive,
+                  });
+                  setEditModalVisible(true);
+                }}
+              >
+                <EditOutlined />
+              </div>
+            </Tooltip>
+            {/* <Tooltip title="Xóa">
             <div className="wrapper-button-menu" onClick={() => onDelete(entity)}>
               <DeleteOutlined />
             </div>
           </Tooltip> */}
-        </div>
+          </div>
         );
-      }
-
-      
+      },
     },
   ];
 
@@ -350,12 +412,12 @@ const CategoryService = () => {
       >
         {/* abc */}
         <CreateCategoryServiceForm
-          data={listRole?.data}
+          data={listRole}
           type={type_modal}
-          role_id={currentRow?.role_id}
-          role_name={currentRow?.role_name}
+          // role_id={currentRow?.role_id}
+          role={currentRow?.role}
           email={currentRow?.email}
-          clinics={currentRow?.clinics}
+          active={currentRow?.active}
           id={currentRow?.id}
           name={currentRow?.name}
           onDone={() => {

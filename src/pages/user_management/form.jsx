@@ -5,7 +5,7 @@ import { Select } from 'antd';
 import { ProCard, ProFormSwitch } from '@ant-design/pro-components';
 import { updateUser, createNewUser } from './service';
 import { getListClinic } from './service';
-import {strVNForSearch} from "@/common/util";
+import { strVNForSearch } from '@/common/util';
 const { Panel } = Collapse;
 
 const CreateCategoryServiceForm = (props) => {
@@ -15,7 +15,7 @@ const CreateCategoryServiceForm = (props) => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [loading, setLoading] = useState(false);
   const [isClinic, setIsClinic] = useState(false);
-  const [listClinic, setListClinic] = useState([]);
+  // const [listClinic, setListClinic] = useState([]);
   const FormItem = Form.Item;
 
   const filterOption = (input, option) => {
@@ -34,9 +34,12 @@ const CreateCategoryServiceForm = (props) => {
       name: fieldValue.name,
       email: fieldValue.email,
       password: fieldValue.password,
-      role_id: fieldValue.role_id,
-      clinic_ids : fieldValue.clinic_id
+      role: fieldValue.role,
+      isActive: fieldValue.isActive
+      // clinic_ids : fieldValue.clinic_id
     };
+
+    console.log(body)
 
     if (props.type === 'EDIT') {
       const result = await updateUser(props.id, body);
@@ -57,24 +60,22 @@ const CreateCategoryServiceForm = (props) => {
     setLoading(false);
   };
 
-  // Check lại phần này 
+  // Check lại phần này
 
-  // useEffect(() => {
-  //   async function fetch() {
-  //     setLoadingPage(true)
-  //     const result = await getListClinic();
-  //     setListClinic(result);
-  //     const clinics = props?.clinics?.map((item) => item.id)
-  //     form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
-  //     form.setFieldsValue({ role_id: props.type === 'EDIT' ? props.role_id : null });
-  //     form.setFieldsValue({ email: props.type === 'EDIT' ? props.email : '' });
-  //     form.setFieldsValue({clinic_id: props.type === 'EDIT'? clinics : null})
-  //     if(props?.role_name === 'CLINIC')
-  //       setIsClinic(true)
-  //   }
-  //   fetch();
-  //   setLoadingPage(false);
-  // }, []);
+  useEffect(() => {
+    async function fetch() {
+      setLoadingPage(true);
+      form.setFieldsValue({ name: props.type === 'EDIT' ? props.name : '' });
+      form.setFieldsValue({ role: props.type === 'EDIT' ? props.role : null });
+      form.setFieldsValue({ email: props.type === 'EDIT' ? props.email : '' });
+      form.setFieldsValue({ isActive: props.type === 'EDIT' ? props.active : '' });
+      // form.setFieldsValue({clinic_id: props.type === 'EDIT'? clinics : null})
+      // if(props?.role_name === 'CLINIC')
+      //   setIsClinic(true)
+    }
+    fetch();
+    setLoadingPage(false);
+  }, []);
 
   const renderCreateForm = (data) => {
     return (
@@ -93,7 +94,7 @@ const CreateCategoryServiceForm = (props) => {
                 },
               ]}
             >
-              <Input placeholder="Ví dụ: Nha khoa Oze" />
+              <Input placeholder="Ví dụ: Tuấn Hưng" />
             </FormItem>
           </Col>
           <Col xs={24}>
@@ -109,7 +110,7 @@ const CreateCategoryServiceForm = (props) => {
                 },
               ]}
             >
-              <Input placeholder="Ví dụ: admin@nhakhoaoze.vn" />
+              <Input placeholder="Ví dụ: admin@gmail.vn" disabled={props.type === 'EDIT' ? true : false} />
             </FormItem>
           </Col>
           <Col xs={24}>
@@ -171,7 +172,7 @@ const CreateCategoryServiceForm = (props) => {
             <FormItem
               style={{ marginBottom: '10px' }}
               label="Chọn role"
-              name="role_id"
+              name="role"
               rules={[
                 {
                   required: true,
@@ -183,25 +184,64 @@ const CreateCategoryServiceForm = (props) => {
                 className="select-form-contact"
                 style={{ width: '100%' }}
                 placeholder="Chọn role"
-                onChange={(value, obj) => {
-                  if (obj?.children === 'CLINIC')
-                    //Role can display Clinic box
-                    setIsClinic(true);
-                  else setIsClinic(false);
-                }}
+                // onChange={(value, obj) => {
+                //   if (obj?.children === 'CLINIC')
+                //     //Role can display Clinic box
+                //     setIsClinic(true);
+                //   else setIsClinic(false);
+                // }}
               >
                 {data &&
                   data.map((item) => {
                     return (
-                      <Option key={item.id} value={item.id}>
-                        {item.name}
+                      <Option key={item} value={item}>
+                        {item}
                       </Option>
                     );
                   })}
               </Select>
             </FormItem>
           </Col>
-          {isClinic && (
+          <Col xs={24}>
+            <FormItem
+              style={{ marginBottom: '10px' }}
+              label="Active"
+              name="isActive"
+              rules={[
+                {
+                  required: true,
+                  message: 'Bạn chưa chọn trạng thái',
+                },
+              ]}
+            >
+              <Select
+                className="select-form-contact"
+                style={{ width: '100%' }}
+                placeholder="Active"
+                // onChange={(value, obj) => {
+                //   if (obj?.children === 'CLINIC')
+                //     //Role can display Clinic box
+                //     setIsClinic(true);
+                //   else setIsClinic(false);
+                // }}
+              >
+                {[
+                  {
+                    value: true,
+                    lable: 'TRUE',
+                  },
+                  { value: false, lable: 'FALSE' },
+                ].map((item) => {
+                  return (
+                    <Option key={item.value} value={item.value}>
+                      {item.lable}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </FormItem>
+          </Col>
+          {/* {isClinic && (
             <Col xs={24}>
               <FormItem
                 style={{ marginBottom: '10px' }}
@@ -233,7 +273,7 @@ const CreateCategoryServiceForm = (props) => {
                 </Select>
               </FormItem>
             </Col>
-          )}
+          )} */}
         </Row>
 
         <FormItem className="wrapper-button-submit">

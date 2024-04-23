@@ -28,6 +28,7 @@ export async function getListUser(
     },
     ...(options || {}),
   });
+  console.log("123123", result.data)
   return {
     data: result.data,
     success: true,
@@ -48,26 +49,29 @@ export async function getListRole() {
   };
 }
 
-export async function createNewUser(body: any){
-  try{
-    const result = await request(`${API_ENDPOINT}/admin/user`, {
+export async function createNewUser(body: any) {
+  try {
+    const result = await request(`${API_ENDPOINT}/api/users/create-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthority()}`,
       },
-      data: body
+      data: {
+        ...body,
+        verificationCode: 0
+      }
     })
     return result;
-  } catch (e){
+  } catch (e) {
     console.log(e)
   }
 }
 
-export async function updateUser(id: number, body: any){
-  try{
-    const result = await request(`${API_ENDPOINT}/admin/user/${id}`, {
-      method: 'PATCH',
+export async function updateUser(id: number, body: any) {
+  try {
+    const result = await request(`${API_ENDPOINT}/api/users/${id}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthority()}`,
@@ -75,7 +79,7 @@ export async function updateUser(id: number, body: any){
       data: body
     })
     return result;
-  } catch (e){
+  } catch (e) {
     console.log(e)
   }
 }
@@ -111,10 +115,10 @@ export async function getListClinic() {
 // export async function getDataCurrentRole(id: number) {
 //     const result = await request(`${API_ENDPOINT}/role/current-role/${id}`, {
 //       method: 'GET',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   Authorization: `Bearer ${getAuthority()}`,
-      // },
+// headers: {
+//   'Content-Type': 'application/json',
+//   Authorization: `Bearer ${getAuthority()}`,
+// },
 //     });
 //     return {
 //       data: result,
