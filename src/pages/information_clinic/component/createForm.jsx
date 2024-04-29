@@ -6,7 +6,7 @@ import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
 import {
   createInformationClinic,
-  editInformationClinic,
+  editInformationPayment,
   getInformationClinic,
   getListClinic,
 } from '../service';
@@ -25,19 +25,19 @@ const CreateInformationClinicForm = (props) => {
     setLoading(true);
     const fieldsValue = await form.validateFields();
     if (props.type === 'EDIT') {
-      const result = await editInformationClinic({ ...fieldsValue }, props.id);
+      const result = await editInformationPayment({ ...fieldsValue }, props.id);
       if (result.status === 200) {
         props.onDone();
       }
     } else {
-      const result = await createInformationClinic({ ...fieldsValue });
-      if (result.status === 200) {
-        form.resetFields();
-        history.push('/information_clinic');
-      }
-      if (props.type === 'CREATE-CLINIC') {
-        props.onDone(result.data.id);
-      }
+      // const result = await createInformationClinic({ ...fieldsValue });
+      // if (result.status === 200) {
+      //   form.resetFields();
+      //   history.push('/information_clinic');
+      // }
+      // if (props.type === 'CREATE-CLINIC') {
+      //   props.onDone(result.data.id);
+      // }
     }
 
     setLoading(false);

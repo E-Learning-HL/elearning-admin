@@ -66,9 +66,9 @@ export async function createInformationClinic(body: any) {
     return false;
   }
 }
-export async function editInformationClinic(body: any, id: number) {
+export async function editInformationPayment(body: any, id: number) {
   try {
-    let res = await request(`${DEV_API_HOST}/admin/information_clinic/${id}`, {
+    let res = await request(`${DEV_API_HOST}/api/payments/update-payment/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

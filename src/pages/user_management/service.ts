@@ -51,7 +51,7 @@ export async function getListRole() {
 
 export async function createNewUser(body: any) {
   try {
-    const result = await request(`${API_ENDPOINT}/api/users/create-user`, {
+    const result = await request(`${DEV_API_HOST}/api/users/create-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export async function createNewUser(body: any) {
 
 export async function updateUser(id: number, body: any) {
   try {
-    const result = await request(`${API_ENDPOINT}/api/users/${id}`, {
+    const result = await request(`${DEV_API_HOST}/api/users/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

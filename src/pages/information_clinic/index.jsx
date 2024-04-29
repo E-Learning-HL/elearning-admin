@@ -220,7 +220,7 @@ const InformationClinic = () => {
         />
       </ConfigProvider>
       <Modal
-        title="Chỉnh sửa thông order"
+        title="Chỉnh sửa thông tin order"
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
