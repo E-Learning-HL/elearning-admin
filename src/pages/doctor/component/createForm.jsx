@@ -21,6 +21,7 @@ import {
   Card,
   Popconfirm,
   Checkbox,
+  InputNumber,
 } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
@@ -157,6 +158,7 @@ const CreateDoctorForm = (props) => {
           audio: fieldsValue.audio,
           taskType: 'LISTENING',
           question: fieldsValue.listening_question,
+          time: fieldsValue.listening_time,
           taskId: taskListeningId,
         });
       } else {
@@ -164,6 +166,7 @@ const CreateDoctorForm = (props) => {
           audio: fieldsValue.audio,
           taskType: 'LISTENING',
           question: fieldsValue.listening_question,
+          time: fieldsValue.listening_time,
         });
       }
     }
@@ -175,12 +178,14 @@ const CreateDoctorForm = (props) => {
           taskType: 'READING',
           question: fieldsValue.reading_question,
           taskId: taskReadingId,
+          time: fieldsValue.reading_time
         });
       } else {
         body.task.push({
           content: fieldsValue.reading_content,
           taskType: 'READING',
           question: fieldsValue.reading_question,
+          time: fieldsValue.reading_time
         });
       }
     }
@@ -241,6 +246,7 @@ const CreateDoctorForm = (props) => {
               url: taskListening?.file[0]?.url,
             },
           ],
+          listening_time: taskListening.time,
           listening_question: taskListening?.question?.map((item) => {
             return {
               questionId: item.id,
@@ -255,6 +261,7 @@ const CreateDoctorForm = (props) => {
               }),
             };
           }),
+          reading_time: taskReading.time,
           reading_content: taskReading?.content,
           reading_question: taskReading?.question?.map((item) => {
             return {
@@ -476,6 +483,20 @@ const CreateDoctorForm = (props) => {
                   </Upload>
                 </FormItem>
               </Col>
+              <Col xl={12}>
+                <Form.Item
+                  label="Thời gian làm bài"
+                  name='listening_time'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Bạn chưa nhập thời gian',
+                    },
+                  ]}
+                >
+                  <InputNumber type='number' placeholder="Nhập thời gian (phút)" style={{ width:'60%' }}></InputNumber>
+                </Form.Item>
+              </Col>
               {/* Content */}
               {/* <Col xl={24}>
                 <FormItem
@@ -696,6 +717,21 @@ const CreateDoctorForm = (props) => {
               <Divider />
               {/* Tạo bài đọc */}
               <div className="task-title">Reading</div>
+              <Col xl={12}>
+                <Form.Item
+                  label="Thời gian làm bài"
+                  name='reading_time'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Bạn chưa nhập thời gian',
+                    },
+                  ]}
+                  
+                >
+                  <InputNumber type='number' placeholder="Nhập thời gian (phút)" style={{ width:'60%' }}></InputNumber>
+                </Form.Item>
+              </Col>
               {/* Content */}
               <Col xl={24}>
                 <FormItem
