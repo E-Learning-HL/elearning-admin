@@ -71,7 +71,7 @@ export async function createNewUser(body: any) {
 export async function updateUser(id: number, body: any) {
   try {
     const result = await request(`${DEV_API_HOST}/api/users/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthority()}`,

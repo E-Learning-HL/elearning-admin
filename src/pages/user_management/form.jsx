@@ -43,12 +43,12 @@ const CreateCategoryServiceForm = (props) => {
 
     if (props.type === 'EDIT') {
       const result = await updateUser(props.id, body);
-      if (result?.email === body.email) {
+      if (result.status === 200) {
         props.onDone();
       }
     } else {
       const result = await createNewUser(body);
-      if (result?.email === body.email) {
+      if (result.status === 200) {
         props.onDone();
         // form.resetFields();
       }

@@ -5,10 +5,7 @@ import { Button, Col, Form, Input, Row, Select, Skeleton, message } from 'antd';
 import { history } from 'umi';
 import { strVNForSearch } from '../../../common/util';
 import {
-  createInformationClinic,
-  editInformationPayment,
-  getInformationClinic,
-  getListClinic,
+  editInformationPayment
 } from '../service';
 import './index.less';
 import { getListProvince, getListService } from '@/pages/contact/service';
@@ -26,7 +23,7 @@ const CreateInformationClinicForm = (props) => {
     const fieldsValue = await form.validateFields();
     if (props.type === 'EDIT') {
       const result = await editInformationPayment({ ...fieldsValue }, props.id);
-      if (result.status === 200) {
+      if (result.statusCode === 200) {
         props.onDone();
       }
     } else {

@@ -77,6 +77,9 @@ export async function updateCourse(body: any, id: number){
     },
     data: {...body}
   });
+  if (result?.status === 200) {
+    message.success('Chỉnh sửa thành công');
+  }
   return {
     data: result,
   };
