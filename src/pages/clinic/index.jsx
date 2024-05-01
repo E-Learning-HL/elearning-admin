@@ -218,7 +218,7 @@ const Clinic = () => {
               <EditOutlined />
             </div>
           </Tooltip>
-          <Popconfirm
+          {/* <Popconfirm
             title="Bạn có chắc chắn xóa không?"
             placement="topRight"
             onConfirm={() => {
@@ -232,7 +232,7 @@ const Clinic = () => {
                 <DeleteOutlined />
               </div>
             </Tooltip>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       ),
     },
